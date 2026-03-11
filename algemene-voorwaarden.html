@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algemene Voorwaarden – Housco</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,700;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MQ78KCH5YV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-MQ78KCH5YV');
+</script>
+<style>
+  :root {
+    --ink: #2d1f17; --paper: #faf7f4; --cream: #ede9e3;
+    --accent: #c8442a; --accent-light: #f0e8e6;
+    --muted: #8a7060; --border: #e0d8d0; --white: #ffffff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); }
+
+  nav { position: sticky; top: 0; z-index: 100; background: var(--white); border-bottom: 1px solid var(--border); padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color .2s; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta { display: flex; gap: 12px; }
+  .btn { padding: 10px 20px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; text-decoration: none; display: inline-block; }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+  .btn-primary { background: var(--accent); color: var(--white); }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 8px; }
+  .hamburger span { width: 24px; height: 2px; background: var(--ink); border-radius: 2px; transition: all .3s; display: block; }
+  .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+  .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: var(--white); border-bottom: 1px solid var(--border); padding: 16px 24px; z-index: 99; }
+  .mobile-menu.open { display: block; }
+  .mobile-menu a { display: block; padding: 14px 0; font-size: 16px; font-weight: 500; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--border); }
+  .mobile-menu a:last-child { border-bottom: none; }
+
+  .breadcrumb { background: var(--cream); border-bottom: 1px solid var(--border); padding: 10px 48px; font-size: 13px; color: var(--muted); }
+  .breadcrumb a { color: var(--accent); text-decoration: none; font-weight: 500; }
+
+  .content { max-width: 800px; margin: 0 auto; padding: 64px 48px 80px; }
+  .content h1 { font-family: 'Fraunces', serif; font-size: 48px; font-weight: 700; letter-spacing: -2px; margin-bottom: 8px; }
+  .content .date { font-size: 13px; color: var(--muted); margin-bottom: 48px; }
+  .content h2 { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; margin: 40px 0 12px; }
+  .content h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; }
+  .content p { font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 16px; }
+  .content ul { padding-left: 20px; margin-bottom: 16px; }
+  .content ul li { font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 6px; }
+  .content a { color: var(--accent); text-decoration: none; }
+
+  footer { border-top: 1px solid var(--border); padding: 32px 48px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 24px; }
+    nav .nav-links, nav .nav-cta { display: none; }
+    .hamburger { display: flex; }
+    .content { padding: 48px 24px; }
+    .content h1 { font-size: 36px; }
+    .breadcrumb { padding: 10px 24px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" style="text-decoration:none;display:flex;align-items:center;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 148 62" height="36"><polyline points="5,22 49,4 93,22 143,22" fill="none" stroke="#2d1f17" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="58" x2="143" y2="58" stroke="#2d1f17" stroke-width="2.5" stroke-linecap="round"/><text x="5" y="54" font-family="Fraunces, Georgia, serif" font-size="36" font-weight="700" letter-spacing="-1" fill="#2d1f17">Hous<tspan fill="#C8442A">co</tspan></text></svg></a>
+  <ul class="nav-links">
+    <li><a href="kopen.html">Kopen</a></li>
+    <li><a href="verkopen.html">Verkopen</a></li>
+    <li><a href="hoe-het-werkt.html">Hoe het werkt</a></li>
+    <li><a href="over-ons.html">Over ons</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-cta">
+    <button class="btn btn-ghost">Inloggen</button>
+    <button class="btn btn-primary">Gratis aanmelden</button>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="kopen.html">Kopen</a>
+  <a href="verkopen.html">Verkopen</a>
+  <a href="hoe-het-werkt.html">Hoe het werkt</a>
+  <a href="over-ons.html">Over ons</a>
+  <a href="contact.html">Contact</a>
+  <a href="index.html">Terug naar home</a>
+</div>
+
+<div class="breadcrumb">
+  <a href="index.html">← Terug naar home</a>
+  <span style="margin:0 10px;color:var(--border);">|</span>
+  <span style="color:var(--ink);font-weight:500;">Algemene Voorwaarden</span>
+</div>
+
+<div class="content">
+  <h1>Algemene Voorwaarden</h1>
+  <p class="date">Versie 1.0 · Laatst bijgewerkt: maart 2026</p>
+
+  <h2>1. Over Housco</h2>
+  <p>Housco is een online woningplatform waarop particuliere verkopers hun woning kunnen aanbieden en particuliere kopers een woning kunnen zoeken en bieden. Housco is gevestigd in Gorinchem, Nederland.</p>
+  <p>Door gebruik te maken van het platform ga je akkoord met deze algemene voorwaarden.</p>
+
+  <h2>2. Dienstverlening</h2>
+  <p>Housco biedt een digitaal platform waarop:</p>
+  <ul>
+    <li>Verkopers hun woning kunnen plaatsen en het biedproces kunnen beheren</li>
+    <li>Kopers woningen kunnen zoeken, bezichtigen en bieden</li>
+    <li>Beide partijen rechtstreeks met elkaar in contact kunnen komen</li>
+  </ul>
+  <p>Housco treedt op als facilitator en is geen partij bij de koopovereenkomst tussen koper en verkoper.</p>
+
+  <h2>3. Kosten en betaling</h2>
+  <p>Voor kopers is het gebruik van Housco gratis. Verkopers betalen een eenmalig vast bedrag van <strong>€500</strong> bij een succesvolle verkoop via het platform. Bij geen verkoop worden geen kosten in rekening gebracht.</p>
+  <p>Betaling dient te geschieden binnen 14 dagen na het sluiten van de koopovereenkomst via de door Housco aangegeven betaalmethode.</p>
+
+  <h2>4. Verplichtingen van de verkoper</h2>
+  <p>De verkoper is verantwoordelijk voor:</p>
+  <ul>
+    <li>Het verstrekken van juiste en volledige informatie over de woning</li>
+    <li>Het tijdig reageren op vragen en biedingen van kopers</li>
+    <li>Het inschakelen van een notaris voor de juridische overdracht</li>
+    <li>Het naleven van alle wettelijke verplichtingen rondom woningverkoop</li>
+  </ul>
+
+  <h2>5. Verplichtingen van de koper</h2>
+  <p>De koper is verantwoordelijk voor:</p>
+  <ul>
+    <li>Het verstrekken van juiste persoonlijke gegevens bij registratie</li>
+    <li>Het alleen bieden als men ook daadwerkelijk de intentie heeft te kopen</li>
+    <li>Het financieren van het bod indien geaccepteerd</li>
+    <li>Het inschakelen van een notaris voor de juridische overdracht</li>
+  </ul>
+
+  <h2>6. Biedproces</h2>
+  <p>Housco hanteert een transparant biedproces waarbij alle biedingen zichtbaar zijn voor kopers die zich hebben aangemeld voor het betreffende biedproces. Een bod is bindend zodra de verkoper dit schriftelijk heeft geaccepteerd.</p>
+  <p>Housco is niet verantwoordelijk voor geschillen die ontstaan tussen koper en verkoper na het sluiten van de koopovereenkomst.</p>
+
+  <h2>7. Aansprakelijkheid</h2>
+  <p>Housco is niet aansprakelijk voor:</p>
+  <ul>
+    <li>Onjuiste informatie verstrekt door verkopers of kopers</li>
+    <li>Schade als gevolg van het niet doorgaan van een woningtransactie</li>
+        <li>Technische storingen of tijdelijke onbeschikbaarheid van het platform</li>
+    <li>Geschillen tussen koper en verkoper</li>
+  </ul>
+
+  <h2>8. Privacy</h2>
+  <p>Housco verwerkt persoonsgegevens conform de Algemene Verordening Gegevensbescherming (AVG). Persoonlijke gegevens worden uitsluitend gebruikt voor het faciliteren van de dienstverlening en worden niet zonder toestemming gedeeld met derden.</p>
+
+  <h2>9. Wijzigingen</h2>
+  <p>Housco behoudt het recht deze algemene voorwaarden te wijzigen. Bij wijzigingen worden gebruikers via e-mail geïnformeerd. Bij voortgezet gebruik van het platform na wijziging ga je akkoord met de nieuwe voorwaarden.</p>
+
+  <h2>10. Toepasselijk recht</h2>
+  <p>Op deze voorwaarden is Nederlands recht van toepassing. Geschillen worden voorgelegd aan de bevoegde rechter in het arrondissement Rotterdam.</p>
+
+  <h2>11. Contact</h2>
+  <p>Vragen over deze algemene voorwaarden? Neem contact op via <a href="/cdn-cgi/l/email-protection#e1888f878ea1898e9492828ecf8f8d"><span class="__cf_email__" data-cfemail="fc95929a93bc9493898f9f93d29290">[email&#160;protected]</span></a> of via de <a href="contact.html">contactpagina</a>.</p>
+</div>
+
+<footer>
+  <a href="index.html" style="text-decoration:none;display:flex;align-items:center;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 148 62" height="30"><polyline points="5,22 49,4 93,22 143,22" fill="none" stroke="#2d1f17" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="58" x2="143" y2="58" stroke="#2d1f17" stroke-width="2.5" stroke-linecap="round"/><text x="5" y="54" font-family="Fraunces, Georgia, serif" font-size="36" font-weight="700" letter-spacing="-1" fill="#2d1f17">Hous<tspan fill="#C8442A">co</tspan></text></svg></a>
+  <div>© 2026 Housco B.V. · Alle rechten voorbehouden</div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;">
+    <a href="index.html" style="color:var(--muted);text-decoration:none;">Home</a>
+    <a href="over-ons.html" style="color:var(--muted);text-decoration:none;">Over ons</a>
+    <a href="contact.html" style="color:var(--muted);text-decoration:none;">Contact</a>
+    <a href="algemene-voorwaarden.html" style="color:var(--muted);text-decoration:none;">Voorwaarden</a>
+    <a href="privacy.html" style="color:var(--muted);text-decoration:none;">Privacy</a>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-stat
