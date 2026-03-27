@@ -155,7 +155,7 @@
         melding.textContent = error.message;
         melding.className = 'melding fout';
       } else {
-        melding.textContent = 'Gelukt! Controleer uw e-mail om uw account te bevestigen.';
+        window.location.href = 'rol-kiezen.html';
         melding.className = 'melding succes';
         document.getElementById('registreer-form').reset();
       }
