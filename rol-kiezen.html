@@ -4,99 +4,158 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kies je rol – Housco</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,700;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
+    :root {
+      --ink: #2d1f17; --paper: #faf7f4; --cream: #ede9e3;
+      --accent: #c8442a; --accent-light: #f0e8e6;
+      --green: #2a6b4a; --green-light: #e3ede8;
+      --muted: #8a7060; --border: #e0d8d0; --white: #ffffff;
+      --dark: #3d2b1f;
     }
-    .formulier {
-      background: #fff;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 100; background: var(--white); border-bottom: 1px solid var(--border); padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--ink); font-weight: 600; }
+    .nav-cta { display: flex; gap: 12px; align-items: center; }
+    .btn { padding: 10px 20px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; text-decoration: none; display: inline-block; }
+    .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--cream); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 8px; }
+    .hamburger span { width: 24px; height: 2px; background: var(--ink); border-radius: 2px; transition: all .3s; display: block; }
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+    .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: var(--white); border-bottom: 1px solid var(--border); padding: 16px 24px; z-index: 99; box-shadow: 0 8px 24px rgba(61,43,31,.08); }
+    .mobile-menu.open { display: block; }
+    .mobile-menu a { display: block; padding: 14px 0; font-size: 16px; font-weight: 500; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--border); }
+    .mobile-menu a:last-child { border-bottom: none; }
+
+    /* PAGE */
+    .pagina { min-height: calc(100vh - 64px); display: flex; align-items: center; justify-content: center; padding: 48px 24px; }
+    .kaart {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
       width: 100%;
-      max-width: 440px;
+      max-width: 480px;
+      box-shadow: 0 4px 24px rgba(61,43,31,.07);
     }
-    h1 {
-      margin-top: 0;
-      font-size: 1.5rem;
-      color: #333;
+    .kaart-label {
+      font-size: 12px; font-weight: 700; letter-spacing: .5px;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
     }
-    p.sub {
-      font-size: 0.9rem;
-      color: #777;
-      margin-top: -0.5rem;
-      margin-bottom: 1.5rem;
+    .kaart h1 {
+      font-family: 'Fraunces', serif;
+      font-size: 28px; font-weight: 700; letter-spacing: -.5px;
+      color: var(--ink); margin-bottom: 6px;
     }
-    .rollen {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.25rem;
-    }
+    .kaart .sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+
+    /* ROL CARDS */
+    .rollen { display: flex; gap: 16px; margin-bottom: 20px; }
     .rol-kaart {
       flex: 1;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      padding: 1.25rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 16px;
       text-align: center;
       cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-      background: #fff;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+      background: var(--paper);
     }
     .rol-kaart:hover {
-      border-color: #0066cc;
-      background: #f0f6ff;
+      border-color: var(--accent);
+      background: var(--accent-light);
     }
     .rol-kaart.geselecteerd {
-      border-color: #0066cc;
-      background: #e8f0fe;
+      border-color: var(--accent);
+      background: var(--accent-light);
+      box-shadow: 0 0 0 3px rgba(200,68,42,.15);
     }
-    .rol-kaart .icoon {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
+    .rol-kaart .icoon { font-size: 2rem; margin-bottom: 10px; }
     .rol-kaart .naam {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #333;
+      font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 4px;
     }
-    .rol-kaart .omschrijving {
-      font-size: 0.8rem;
-      color: #777;
-      margin-top: 0.25rem;
+    .rol-kaart .omschrijving { font-size: 13px; color: var(--muted); }
+
+    /* BUTTON */
+    .btn-primary {
+      background: var(--accent); color: var(--white);
+      width: 100%; padding: 13px; font-size: 15px;
+      border-radius: 10px; text-align: center;
+      font-family: 'DM Sans', sans-serif; font-weight: 600;
+      border: none; cursor: pointer; transition: background .2s;
     }
-    button {
-      width: 100%;
-      padding: 0.75rem;
-      background: #0066cc;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    button:hover { background: #0052a3; }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-primary:hover { background: #a8341d; }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* FEEDBACK */
     .melding {
-      padding: 0.75rem;
-      border-radius: 4px;
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
-      display: none;
+      padding: 12px 14px; border-radius: 8px;
+      margin-bottom: 16px; font-size: 14px; display: none;
     }
-    .melding.fout { background: #fdecea; color: #b00020; display: block; }
+    .melding.fout { background: var(--accent-light); color: var(--accent); display: block; }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 32px 48px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      nav .nav-links, nav .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px; }
+    }
+    @media (max-width: 480px) {
+      .kaart { padding: 28px 20px; }
+      .rollen { flex-direction: column; }
+    }
   </style>
 </head>
 <body>
-  <div class="formulier">
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" style="text-decoration:none;display:flex;align-items:center;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 148 62" height="36"><polyline points="5,22 49,4 93,22 143,22" fill="none" stroke="#2d1f17" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="58" x2="143" y2="58" stroke="#2d1f17" stroke-width="2.5" stroke-linecap="round"/><text x="5" y="54" font-family="Fraunces, Georgia, serif" font-size="36" font-weight="700" letter-spacing="-1" fill="#2d1f17">Hous<tspan fill="#C8442A">co</tspan></text></svg></a>
+  <ul class="nav-links">
+    <li><a href="kopen.html">Kopen</a></li>
+    <li><a href="verkopen.html">Verkopen</a></li>
+    <li><a href="hoe-het-werkt.html">Hoe het werkt</a></li>
+    <li><a href="over-ons.html">Over ons</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="inloggen.html" class="btn btn-ghost">Inloggen</a>
+    <a href="registreren.html" class="btn" style="background:var(--accent);color:var(--white);">Gratis aanmelden</a>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="kopen.html">Kopen</a>
+  <a href="verkopen.html">Verkopen</a>
+  <a href="hoe-het-werkt.html">Hoe het werkt</a>
+  <a href="over-ons.html">Over ons</a>
+  <a href="contact.html">Contact</a>
+  <a href="inloggen.html" style="color:var(--accent);">Inloggen</a>
+  <a href="registreren.html" style="color:var(--accent);font-weight:600;">Gratis aanmelden</a>
+</div>
+
+<!-- ROLKEUZE -->
+<div class="pagina">
+  <div class="kaart">
+    <div class="kaart-label">Bijna klaar</div>
     <h1>Wat wil je doen?</h1>
     <p class="sub">Kies je rol. Je kunt dit later wijzigen in je profiel.</p>
+
     <div id="melding" class="melding"></div>
+
     <div class="rollen">
       <div class="rol-kaart" id="kaart-koper" onclick="kiesRol('koper')">
         <div class="icoon">🏠</div>
@@ -109,66 +168,88 @@
         <div class="omschrijving">Ik wil een woning verkopen</div>
       </div>
     </div>
-    <button id="opslaan-btn" disabled onclick="opslaan()">Doorgaan</button>
+
+    <button id="opslaan-btn" class="btn-primary" disabled onclick="opslaan()">Doorgaan</button>
   </div>
+</div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+<!-- FOOTER -->
+<footer>
+  <a href="index.html" style="text-decoration:none;display:flex;align-items:center;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 148 62" height="30"><polyline points="5,22 49,4 93,22 143,22" fill="none" stroke="#2d1f17" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="58" x2="143" y2="58" stroke="#2d1f17" stroke-width="2.5" stroke-linecap="round"/><text x="5" y="54" font-family="Fraunces, Georgia, serif" font-size="36" font-weight="700" letter-spacing="-1" fill="#2d1f17">Hous<tspan fill="#C8442A">co</tspan></text></svg></a>
+  <div>© 2026 Housco B.V. · Alle rechten voorbehouden</div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;">
+    <a href="index.html" style="color:var(--muted);text-decoration:none;">Home</a>
+    <a href="over-ons.html" style="color:var(--muted);text-decoration:none;">Over ons</a>
+    <a href="contact.html" style="color:var(--muted);text-decoration:none;">Contact</a>
+    <a href="algemene-voorwaarden.html" style="color:var(--muted);text-decoration:none;">Voorwaarden</a>
+    <a href="privacy.html" style="color:var(--muted);text-decoration:none;">Privacy</a>
+  </div>
+</footer>
 
-    const supabase = createClient(
-      'https://vzfysqedzlkyqviwkbuw.supabase.co',
-      'sb_publishable_0NbfNpK8qzE6Ec5IEqmrJg_0wLvnTp4'
-    );
+<script>
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+  }
+</script>
 
-    // If arriving via email confirmation link, the token is in the URL hash.
-    // Parse it and set the session explicitly before proceeding.
-    const hash = window.location.hash;
-    if (hash && hash.includes('access_token')) {
-      const params = new URLSearchParams(hash.slice(1));
-      await supabase.auth.setSession({
-        access_token:  params.get('access_token'),
-        refresh_token: params.get('refresh_token'),
-      });
-      // Clean the tokens from the URL without triggering a reload.
-      history.replaceState(null, '', window.location.pathname);
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+  const supabase = createClient(
+    'https://vzfysqedzlkyqviwkbuw.supabase.co',
+    'sb_publishable_0NbfNpK8qzE6Ec5IEqmrJg_0wLvnTp4'
+  );
+
+  // If arriving via email confirmation link, the token is in the URL hash.
+  // Parse it and set the session explicitly before proceeding.
+  const hash = window.location.hash;
+  if (hash && hash.includes('access_token')) {
+    const params = new URLSearchParams(hash.slice(1));
+    await supabase.auth.setSession({
+      access_token:  params.get('access_token'),
+      refresh_token: params.get('refresh_token'),
+    });
+    // Clean the tokens from the URL without triggering a reload.
+    history.replaceState(null, '', window.location.pathname);
+  }
+
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    window.location.href = 'inloggen.html';
+  }
+
+  let gekozenRol = null;
+
+  window.kiesRol = (rol) => {
+    gekozenRol = rol;
+    document.getElementById('kaart-koper').classList.toggle('geselecteerd', rol === 'koper');
+    document.getElementById('kaart-verkoper').classList.toggle('geselecteerd', rol === 'verkoper');
+    document.getElementById('opslaan-btn').disabled = false;
+  };
+
+  window.opslaan = async () => {
+    const melding = document.getElementById('melding');
+    const btn = document.getElementById('opslaan-btn');
+    melding.className = 'melding';
+    melding.textContent = '';
+    btn.disabled = true;
+    btn.textContent = 'Bezig…';
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({ role: gekozenRol })
+      .eq('id', session.user.id);
+
+    if (error) {
+      melding.textContent = error.message;
+      melding.className = 'melding fout';
+      btn.disabled = false;
+      btn.textContent = 'Doorgaan';
+    } else {
+      window.location.href = 'profiel.html';
     }
-
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      window.location.href = 'inloggen.html';
-    }
-
-    let gekozenRol = null;
-
-    window.kiesRol = (rol) => {
-      gekozenRol = rol;
-      document.getElementById('kaart-koper').classList.toggle('geselecteerd', rol === 'koper');
-      document.getElementById('kaart-verkoper').classList.toggle('geselecteerd', rol === 'verkoper');
-      document.getElementById('opslaan-btn').disabled = false;
-    };
-
-    window.opslaan = async () => {
-      const melding = document.getElementById('melding');
-      const btn = document.getElementById('opslaan-btn');
-      melding.className = 'melding';
-      melding.textContent = '';
-      btn.disabled = true;
-      btn.textContent = 'Bezig…';
-
-      const { error } = await supabase
-        .from('profiles')
-        .update({ role: gekozenRol })
-        .eq('id', session.user.id);
-
-      if (error) {
-        melding.textContent = error.message;
-        melding.className = 'melding fout';
-        btn.disabled = false;
-        btn.textContent = 'Doorgaan';
-      } else {
-        window.location.href = 'profiel.html';
-      }
-    };
-  </script>
+  };
+</script>
 </body>
 </html>
