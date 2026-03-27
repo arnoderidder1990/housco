@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mijn profiel – Housco</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .kaart {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 440px;
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      color: #333;
+    }
+    .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #0066cc;
+      color: #fff;
+      font-size: 1.6rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .veld {
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    .veld strong {
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #999;
+      margin-bottom: 0.2rem;
+    }
+    .veld span { color: #333; font-size: 1rem; }
+    hr { border: none; border-top: 1px solid #eee; margin: 1.25rem 0; }
+    button {
+      padding: 0.6rem 1.25rem;
+      background: #eee;
+      color: #333;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    button:hover { background: #e0e0e0; }
+    #laden { color: #888; font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+  <div class="kaart">
+    <div id="laden">Laden…</div>
+    <div id="profiel-inhoud" style="display:none;">
+      <div class="avatar" id="initialen"></div>
+      <h1>Welkom terug!</h1>
+      <div class="veld"><strong>Naam</strong><span id="naam"></span></div>
+      <div class="veld"><strong>E-mailadres</strong><span id="email"></span></div>
+      <div class="veld"><strong>Lid sinds</strong><span id="lid-sinds"></span></div>
+      <hr>
+      <button id="uitloggen-btn">Uitloggen</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    const supabase = createClient(
+      'https://vzfysqedzlkyqviwkbuw.supabase.co',
+      'sb_publishable_0NbfNpK8qzE6Ec5IEqmrJg_0wLvnTp4'
+    );
+
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      window.location.href = 'inloggen.html';
+    } else {
+      const user = session.user;
+      const meta = user.user_metadata || {};
+      const voornaam = meta.voornaam || '';
+      const achternaam = meta.achternaam || '';
+      const naam = [voornaam, achternaam].filter(Boolean).join(' ') || user.email;
+      const initialen = ((voornaam[0] || '') + (achternaam[0] || '')).toUpperCase() || user.email[0].toUpperCase();
+      const lidSinds = new Date(user.created_at).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      document.getElementById('initialen').textContent = initialen;
+      document.getElementById('naam').textContent = naam;
+      document.getElementById('email').textContent = user.email;
+      document.getElementById('lid-sinds').textContent = lidSinds;
+
+      document.getElementById('laden').style.display = 'none';
+      document.getElementById('profiel-inhoud').style.display = 'block';
+
+      document.getElementById('uitloggen-btn').addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        window.location.href = 'inloggen.html';
+      });
+    }
+  </script>
+</body>
+</html>
