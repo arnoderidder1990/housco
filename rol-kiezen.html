@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kies je rol – Housco</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .formulier {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 440px;
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      color: #333;
+    }
+    p.sub {
+      font-size: 0.9rem;
+      color: #777;
+      margin-top: -0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .rollen {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .rol-kaart {
+      flex: 1;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 1.25rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      background: #fff;
+    }
+    .rol-kaart:hover {
+      border-color: #0066cc;
+      background: #f0f6ff;
+    }
+    .rol-kaart.geselecteerd {
+      border-color: #0066cc;
+      background: #e8f0fe;
+    }
+    .rol-kaart .icoon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .rol-kaart .naam {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #333;
+    }
+    .rol-kaart .omschrijving {
+      font-size: 0.8rem;
+      color: #777;
+      margin-top: 0.25rem;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background: #0066cc;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover { background: #0052a3; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .melding {
+      padding: 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .melding.fout { background: #fdecea; color: #b00020; display: block; }
+  </style>
+</head>
+<body>
+  <div class="formulier">
+    <h1>Wat wil je doen?</h1>
+    <p class="sub">Kies je rol. Je kunt dit later wijzigen in je profiel.</p>
+    <div id="melding" class="melding"></div>
+    <div class="rollen">
+      <div class="rol-kaart" id="kaart-koper" onclick="kiesRol('koper')">
+        <div class="icoon">🏠</div>
+        <div class="naam">Koper</div>
+        <div class="omschrijving">Ik wil een woning kopen</div>
+      </div>
+      <div class="rol-kaart" id="kaart-verkoper" onclick="kiesRol('verkoper')">
+        <div class="icoon">🔑</div>
+        <div class="naam">Verkoper</div>
+        <div class="omschrijving">Ik wil een woning verkopen</div>
+      </div>
+    </div>
+    <button id="opslaan-btn" disabled onclick="opslaan()">Doorgaan</button>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    const supabase = createClient(
+      'https://vzfysqedzlkyqviwkbuw.supabase.co',
+      'sb_publishable_0NbfNpK8qzE6Ec5IEqmrJg_0wLvnTp4'
+    );
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      window.location.href = 'inloggen.html';
+    }
+
+    let gekozenRol = null;
+
+    window.kiesRol = (rol) => {
+      gekozenRol = rol;
+      document.getElementById('kaart-koper').classList.toggle('geselecteerd', rol === 'koper');
+      document.getElementById('kaart-verkoper').classList.toggle('geselecteerd', rol === 'verkoper');
+      document.getElementById('opslaan-btn').disabled = false;
+    };
+
+    window.opslaan = async () => {
+      const melding = document.getElementById('melding');
+      const btn = document.getElementById('opslaan-btn');
+      melding.className = 'melding';
+      melding.textContent = '';
+      btn.disabled = true;
+      btn.textContent = 'Bezig…';
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({ role: gekozenRol })
+        .eq('id', session.user.id);
+
+      if (error) {
+        melding.textContent = error.message;
+        melding.className = 'melding fout';
+        btn.disabled = false;
+        btn.textContent = 'Doorgaan';
+      } else {
+        window.location.href = 'profiel.html';
+      }
+    };
+  </script>
+</body>
+</html>
