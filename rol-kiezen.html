@@ -120,6 +120,19 @@
       'sb_publishable_0NbfNpK8qzE6Ec5IEqmrJg_0wLvnTp4'
     );
 
+    // If arriving via email confirmation link, the token is in the URL hash.
+    // Parse it and set the session explicitly before proceeding.
+    const hash = window.location.hash;
+    if (hash && hash.includes('access_token')) {
+      const params = new URLSearchParams(hash.slice(1));
+      await supabase.auth.setSession({
+        access_token:  params.get('access_token'),
+        refresh_token: params.get('refresh_token'),
+      });
+      // Clean the tokens from the URL without triggering a reload.
+      history.replaceState(null, '', window.location.pathname);
+    }
+
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       window.location.href = 'inloggen.html';
