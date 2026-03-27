@@ -71,12 +71,23 @@
     .inloggen a:hover {
       text-decoration: underline;
     }
+  .melding {
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    display: none;
+  }
+  .melding.succes { background: #e6f4ea; color: #1e6e3a; display: block; }
+  .melding.fout   { background: #fdecea; color: #b00020; display: block; }
+  button:disabled { opacity: 0.6; cursor: not-allowed; }
   </style>
 </head>
 <body>
   <div class="formulier">
     <h1>Account aanmaken</h1>
-    <form action="#" method="post">
+    <div id="melding" class="melding"></div>
+    <form id="registreer-form">
       <label for="voornaam">Voornaam</label>
       <input type="text" id="voornaam" name="voornaam" placeholder="Jan" required>
 
@@ -92,11 +103,63 @@
       <label for="bevestig">Wachtwoord bevestigen</label>
       <input type="password" id="bevestig" name="bevestig" placeholder="Herhaal uw wachtwoord" required>
 
-      <button type="submit">Registreren</button>
+      <button type="submit" id="submit-btn">Registreren</button>
     </form>
     <div class="inloggen">
       Al een account? <a href="inloggen.html">Inloggen</a>
     </div>
   </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    const supabase = createClient(
+      'https://vzfysqedzlkyqviwkbuw.supabase.co',
+      'sb_publishable_0NbfNpK8qzE6Ec5IEqmrJg_0wLvnTp4'
+    );
+
+    document.getElementById('registreer-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const melding = document.getElementById('melding');
+      const btn = document.getElementById('submit-btn');
+      melding.className = 'melding';
+      melding.textContent = '';
+
+      const voornaam = document.getElementById('voornaam').value.trim();
+      const achternaam = document.getElementById('achternaam').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const wachtwoord = document.getElementById('wachtwoord').value;
+      const bevestig = document.getElementById('bevestig').value;
+
+      if (wachtwoord !== bevestig) {
+        melding.textContent = 'Wachtwoorden komen niet overeen.';
+        melding.className = 'melding fout';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Bezig…';
+
+      const { error } = await supabase.auth.signUp({
+        email,
+        password: wachtwoord,
+        options: {
+          data: { voornaam, achternaam }
+        }
+      });
+
+      btn.disabled = false;
+      btn.textContent = 'Registreren';
+
+      if (error) {
+        melding.textContent = error.message;
+        melding.className = 'melding fout';
+      } else {
+        melding.textContent = 'Gelukt! Controleer uw e-mail om uw account te bevestigen.';
+        melding.className = 'melding succes';
+        document.getElementById('registreer-form').reset();
+      }
+    });
+  </script>
 </body>
 </html>
