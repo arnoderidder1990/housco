@@ -195,8 +195,8 @@
       console.log('Gekozen rol:', gekozenRol);
 
       supabase.from('profiles')
-        .update({ role: gekozenRol })
-        .eq('id', session.user.id)
+        .upsert({ id: session.user.id, role: gekozenRol }, { onConflict: 'id' })
+        .select()
         .then(function(response) {
           console.log('Supabase response:', response);
           if (response.error) {
@@ -205,7 +205,14 @@
             melding.className = 'melding fout';
             btn.disabled = false;
             btn.textContent = 'Doorgaan';
+          } else if (!response.data || response.data.length === 0) {
+            console.error('Geen rij opgeslagen:', response);
+            melding.textContent = 'Fout: rol kon niet worden opgeslagen. Probeer opnieuw in te loggen.';
+            melding.className = 'melding fout';
+            btn.disabled = false;
+            btn.textContent = 'Doorgaan';
           } else {
+            console.log('Rol opgeslagen:', response.data);
             window.location.href = 'profiel.html';
           }
         });
