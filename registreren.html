@@ -66,6 +66,10 @@
     .melding { padding: 12px 14px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; display: none; }
     .melding.succes { background: var(--green-light); color: var(--green); display: block; }
     .melding.fout { background: var(--accent-light); color: var(--accent); display: block; }
+    .succes-blok { text-align: center; padding: 8px 0 4px; }
+    .succes-blok .succes-icoon { font-size: 2.5rem; margin-bottom: 12px; }
+    .succes-blok h2 { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; letter-spacing: -.3px; color: var(--green); margin-bottom: 10px; }
+    .succes-blok p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
     .onderaan { text-align: center; margin-top: 16px; font-size: 13px; color: var(--muted); }
     .onderaan a { color: var(--accent); text-decoration: none; font-weight: 600; }
     .onderaan a:hover { text-decoration: underline; }
@@ -113,6 +117,13 @@
     <p class="sub">Maak een account aan en begin direct met kopen of verkopen.</p>
 
     <div id="melding" class="melding"></div>
+
+    <div id="succes" style="display:none;" class="succes-blok">
+      <div class="succes-icoon">✉️</div>
+      <h2>Controleer je e-mail</h2>
+      <p>Gelukt! Controleer je e-mail om je account te bevestigen.<br>Je kunt daarna direct inloggen.</p>
+      <a href="inloggen.html" class="btn btn-primary btn-lg" style="width:100%;text-align:center;">Ga naar inloggen</a>
+    </div>
 
     <form id="registreer-form">
       <div class="veld-rij">
@@ -211,9 +222,8 @@
       melding.textContent = error.message;
       melding.className = 'melding fout';
     } else {
-      window.location.href = 'rol-kiezen.html';
-      melding.className = 'melding succes';
-      document.getElementById('registreer-form').reset();
+      document.getElementById('registreer-form').style.display = 'none';
+      document.getElementById('succes').style.display = '';
     }
   });
 </script>
