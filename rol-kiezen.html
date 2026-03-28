@@ -190,12 +190,18 @@
       btn.disabled = true;
       btn.textContent = 'Bezig…';
 
+      console.log('Session:', session);
+      console.log('User ID:', session.user.id);
+      console.log('Gekozen rol:', gekozenRol);
+
       supabase.from('profiles')
         .update({ role: gekozenRol })
         .eq('id', session.user.id)
-        .then(function(result) {
-          if (result.error) {
-            melding.textContent = result.error.message;
+        .then(function(response) {
+          console.log('Supabase response:', response);
+          if (response.error) {
+            console.error('Supabase error:', response.error);
+            melding.textContent = 'Fout: ' + response.error.message;
             melding.className = 'melding fout';
             btn.disabled = false;
             btn.textContent = 'Doorgaan';
@@ -205,22 +211,6 @@
         });
     });
   });
-</script>
-          melding.textContent = result.body || 'Er is een fout opgetreden.';
-          melding.className = 'melding fout';
-          btn.disabled = false;
-          btn.textContent = 'Doorgaan';
-        }
-      })
-      .catch(function(err) {
-        console.log('Fetch error:', err);
-        melding.textContent = 'Er is een fout opgetreden.';
-        melding.className = 'melding fout';
-        btn.disabled = false;
-        btn.textContent = 'Doorgaan';
-      });
-    });
-  }
 </script>
 </body>
 </html>
