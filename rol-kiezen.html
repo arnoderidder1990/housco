@@ -117,19 +117,19 @@
     <div id="melding" class="melding"></div>
 
     <div class="rollen">
-      <div class="rol-kaart" id="kaart-koper" onclick="kiesRol('koper')">
+      <div class="rol-kaart" id="kaart-koper">
         <div class="icoon">🏠</div>
         <div class="naam">Koper</div>
         <div class="omschrijving">Ik wil een woning kopen</div>
       </div>
-      <div class="rol-kaart" id="kaart-verkoper" onclick="kiesRol('verkoper')">
+      <div class="rol-kaart" id="kaart-verkoper">
         <div class="icoon">🔑</div>
         <div class="naam">Verkoper</div>
         <div class="omschrijving">Ik wil een woning verkopen</div>
       </div>
     </div>
 
-    <button id="opslaan-btn" class="btn btn-primary btn-lg" style="width:100%;" disabled onclick="opslaan()">Doorgaan</button>
+    <button id="opslaan-btn" class="btn btn-primary btn-lg" style="width:100%;" disabled>Doorgaan</button>
   </div>
 </div>
 
@@ -180,46 +180,49 @@
   } else {
     document.getElementById('laden').style.display = 'none';
     document.getElementById('inhoud').style.display = '';
+
+    let gekozenRol = null;
+
+    const kiesRol = (rol) => {
+      gekozenRol = rol;
+      document.getElementById('kaart-koper').classList.toggle('geselecteerd', rol === 'koper');
+      document.getElementById('kaart-verkoper').classList.toggle('geselecteerd', rol === 'verkoper');
+      document.getElementById('opslaan-btn').disabled = false;
+    };
+
+    document.getElementById('kaart-koper').addEventListener('click', () => kiesRol('koper'));
+    document.getElementById('kaart-verkoper').addEventListener('click', () => kiesRol('verkoper'));
+
+    document.getElementById('opslaan-btn').addEventListener('click', async () => {
+      const melding = document.getElementById('melding');
+      const btn = document.getElementById('opslaan-btn');
+      melding.className = 'melding';
+      melding.textContent = '';
+      btn.disabled = true;
+      btn.textContent = 'Bezig…';
+
+      console.log('User id:', session.user.id);
+      console.log('Gekozen rol:', gekozenRol);
+
+      const response = await supabase
+        .from('profiles')
+        .update({ role: gekozenRol })
+        .eq('id', session.user.id);
+
+      console.log('Supabase response:', response);
+
+      const { error } = response;
+
+      if (error) {
+        melding.textContent = error.message;
+        melding.className = 'melding fout';
+        btn.disabled = false;
+        btn.textContent = 'Doorgaan';
+      } else {
+        window.location.href = 'profiel.html';
+      }
+    });
   }
-
-  let gekozenRol = null;
-
-  window.kiesRol = (rol) => {
-    gekozenRol = rol;
-    document.getElementById('kaart-koper').classList.toggle('geselecteerd', rol === 'koper');
-    document.getElementById('kaart-verkoper').classList.toggle('geselecteerd', rol === 'verkoper');
-    document.getElementById('opslaan-btn').disabled = false;
-  };
-
-  window.opslaan = async () => {
-    const melding = document.getElementById('melding');
-    const btn = document.getElementById('opslaan-btn');
-    melding.className = 'melding';
-    melding.textContent = '';
-    btn.disabled = true;
-    btn.textContent = 'Bezig…';
-
-    console.log('User id:', session.user.id);
-    console.log('Gekozen rol:', gekozenRol);
-
-    const response = await supabase
-      .from('profiles')
-      .update({ role: gekozenRol })
-      .eq('id', session.user.id);
-
-    console.log('Supabase response:', response);
-
-    const { error } = response;
-
-    if (error) {
-      melding.textContent = error.message;
-      melding.className = 'melding fout';
-      btn.disabled = false;
-      btn.textContent = 'Doorgaan';
-    } else {
-      window.location.href = 'profiel.html';
-    }
-  };
 </script>
 </body>
 </html>
