@@ -110,6 +110,7 @@
     <div class="veld"><strong>Rol</strong><span id="rol"></span></div>
     <div class="veld"><strong>Lid sinds</strong><span id="lid-sinds"></span></div>
     <hr>
+    <div id="rol-actie" style="margin-bottom:12px;"></div>
     <button id="uitloggen-btn" class="btn btn-ghost" style="width:100%;">Uitloggen</button>
   </div>
 </div>
@@ -172,6 +173,14 @@
       document.getElementById('email').textContent = user.email;
       document.getElementById('rol').textContent = rolLabel;
       document.getElementById('lid-sinds').textContent = lidSinds;
+
+      if (profile.role === 'koper') {
+        document.getElementById('rol-actie').innerHTML =
+          '<a href="kopen.html" class="btn btn-primary btn-lg" style="width:100%;text-align:center;">Zoek een woning</a>';
+      } else if (profile.role === 'verkoper') {
+        document.getElementById('rol-actie').innerHTML =
+          '<a href="woning-plaatsen.html" class="btn btn-green btn-lg" style="width:100%;text-align:center;">Plaats een woning</a>';
+      }
 
       document.getElementById('laden').style.display = 'none';
       document.getElementById('inhoud').style.display = '';
