@@ -199,10 +199,17 @@
     btn.disabled = true;
     btn.textContent = 'Bezig…';
 
-    const { error } = await supabase
+    console.log('User id:', session.user.id);
+    console.log('Gekozen rol:', gekozenRol);
+
+    const response = await supabase
       .from('profiles')
       .update({ role: gekozenRol })
       .eq('id', session.user.id);
+
+    console.log('Supabase response:', response);
+
+    const { error } = response;
 
     if (error) {
       melding.textContent = error.message;
