@@ -153,74 +153,96 @@
   }
 </script>
 
-<script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+<script>
+  var SUPABASE_URL  = 'https://vzfysqedzlkyqviwkbuw.supabase.co';
+  var SUPABASE_KEY  = 'sb_publishable_0NbfNpK8qzE6Ec5IEqmrJg_0wLvnTp4';
+  var STORAGE_KEY   = 'sb-vzfysqedzlkyqviwkbuw-auth-token';
 
-  const supabase = createClient(
-    'https://vzfysqedzlkyqviwkbuw.supabase.co',
-    'sb_publishable_0NbfNpK8qzE6Ec5IEqmrJg_0wLvnTp4'
-  );
-
-  // If arriving via email confirmation link, the token is in the URL hash.
-  // Parse it and set the session explicitly before proceeding.
-  const hash = window.location.hash;
-  if (hash && hash.includes('access_token')) {
-    const params = new URLSearchParams(hash.slice(1));
-    await supabase.auth.setSession({
-      access_token:  params.get('access_token'),
-      refresh_token: params.get('refresh_token'),
-    });
-    // Clean the tokens from the URL without triggering a reload.
-    history.replaceState(null, '', window.location.pathname);
+  function userIdFromJwt(token) {
+    var payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    return payload.sub;
   }
 
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
+  function getToken() {
+    // 1. Check URL hash (email confirmation link)
+    var hash = window.location.hash;
+    if (hash && hash.includes('access_token')) {
+      var params = new URLSearchParams(hash.slice(1));
+      var token = params.get('access_token');
+      history.replaceState(null, '', window.location.pathname);
+      return token;
+    }
+    // 2. Fall back to localStorage session set by Supabase JS on other pages
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      try { return JSON.parse(raw).access_token; } catch(e) {}
+    }
+    return null;
+  }
+
+  var accessToken = getToken();
+  if (!accessToken) {
     window.location.href = 'inloggen.html';
   } else {
+    var userId = userIdFromJwt(accessToken);
     document.getElementById('laden').style.display = 'none';
     document.getElementById('inhoud').style.display = '';
 
-    let gekozenRol = null;
+    var gekozenRol = null;
 
-    const kiesRol = (rol) => {
+    function kiesRol(rol) {
       gekozenRol = rol;
       document.getElementById('kaart-koper').classList.toggle('geselecteerd', rol === 'koper');
       document.getElementById('kaart-verkoper').classList.toggle('geselecteerd', rol === 'verkoper');
       document.getElementById('opslaan-btn').disabled = false;
-    };
+    }
 
-    document.getElementById('kaart-koper').addEventListener('click', () => kiesRol('koper'));
-    document.getElementById('kaart-verkoper').addEventListener('click', () => kiesRol('verkoper'));
+    document.getElementById('kaart-koper').addEventListener('click', function() { kiesRol('koper'); });
+    document.getElementById('kaart-verkoper').addEventListener('click', function() { kiesRol('verkoper'); });
 
-    document.getElementById('opslaan-btn').addEventListener('click', async () => {
-      const melding = document.getElementById('melding');
-      const btn = document.getElementById('opslaan-btn');
+    document.getElementById('opslaan-btn').addEventListener('click', function() {
+      var melding = document.getElementById('melding');
+      var btn = document.getElementById('opslaan-btn');
       melding.className = 'melding';
       melding.textContent = '';
       btn.disabled = true;
       btn.textContent = 'Bezig…';
 
-      console.log('User id:', session.user.id);
+      console.log('User id:', userId);
       console.log('Gekozen rol:', gekozenRol);
 
-      const response = await supabase
-        .from('profiles')
-        .update({ role: gekozenRol })
-        .eq('id', session.user.id);
-
-      console.log('Supabase response:', response);
-
-      const { error } = response;
-
-      if (error) {
-        melding.textContent = error.message;
+      fetch(SUPABASE_URL + '/rest/v1/profiles?id=eq.' + userId, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + accessToken,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ role: gekozenRol })
+      })
+      .then(function(res) {
+        console.log('Response status:', res.status);
+        return res.text().then(function(body) { return { status: res.status, body: body }; });
+      })
+      .then(function(result) {
+        console.log('Response body:', result.body);
+        if (result.status >= 200 && result.status < 300) {
+          window.location.href = 'profiel.html';
+        } else {
+          melding.textContent = result.body || 'Er is een fout opgetreden.';
+          melding.className = 'melding fout';
+          btn.disabled = false;
+          btn.textContent = 'Doorgaan';
+        }
+      })
+      .catch(function(err) {
+        console.log('Fetch error:', err);
+        melding.textContent = 'Er is een fout opgetreden.';
         melding.className = 'melding fout';
         btn.disabled = false;
         btn.textContent = 'Doorgaan';
-      } else {
-        window.location.href = 'profiel.html';
-      }
+      });
     });
   }
 </script>
