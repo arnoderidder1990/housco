@@ -198,21 +198,28 @@
         .upsert({ id: session.user.id, role: gekozenRol }, { onConflict: 'id' })
         .select()
         .then(function(response) {
-          console.log('Supabase response:', response);
+          console.log('Supabase upsert response:', JSON.stringify(response));
           if (response.error) {
-            console.error('Supabase error:', response.error);
-            melding.textContent = 'Fout: ' + response.error.message;
+            console.error('Supabase error code:', response.error.code);
+            console.error('Supabase error message:', response.error.message);
+            console.error('Supabase error details:', response.error.details);
+            console.error('Supabase error hint:', response.error.hint);
+            var msg = response.error.message || 'Onbekende fout';
+            if (response.error.code === '42501' || msg.toLowerCase().includes('rls') || msg.toLowerCase().includes('policy')) {
+              msg = 'Geen toegang: RLS-policy ontbreekt. Voeg INSERT-policy toe aan profiles tabel.';
+            }
+            melding.textContent = 'Fout: ' + msg;
             melding.className = 'melding fout';
             btn.disabled = false;
             btn.textContent = 'Doorgaan';
           } else if (!response.data || response.data.length === 0) {
-            console.error('Geen rij opgeslagen:', response);
-            melding.textContent = 'Fout: rol kon niet worden opgeslagen. Probeer opnieuw in te loggen.';
+            console.error('Geen rij teruggekomen na upsert:', response);
+            melding.textContent = 'Fout: opslaan mislukt — geen rij teruggekregen. Controleer RLS-policies in Supabase.';
             melding.className = 'melding fout';
             btn.disabled = false;
             btn.textContent = 'Doorgaan';
           } else {
-            console.log('Rol opgeslagen:', response.data);
+            console.log('Rol opgeslagen:', response.data[0]);
             window.location.href = 'profiel.html';
           }
         });
