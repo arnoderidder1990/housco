@@ -304,6 +304,25 @@
       if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; }
       if (ma) ma.style.display = 'none';
 
+      const uitloggenNav = () => supabase.auth.signOut().then(() => { window.location.href = 'index.html'; });
+      const navCtaEl = document.querySelector('.nav-cta');
+      if (navCtaEl) {
+        const uitNavBtn = document.createElement('button');
+        uitNavBtn.className = 'btn btn-ghost';
+        uitNavBtn.textContent = 'Uitloggen';
+        uitNavBtn.addEventListener('click', uitloggenNav);
+        navCtaEl.appendChild(uitNavBtn);
+      }
+      const mobileMenuEl = document.getElementById('mobileMenu');
+      if (mobileMenuEl) {
+        const mobUit = document.createElement('a');
+        mobUit.href = '#';
+        mobUit.style.cssText = 'color:var(--accent);';
+        mobUit.textContent = 'Uitloggen';
+        mobUit.addEventListener('click', e => { e.preventDefault(); uitloggenNav(); });
+        mobileMenuEl.appendChild(mobUit);
+      }
+
       const nieuweRol = profile.role === 'koper' ? 'verkoper' : 'koper';
       const nieuweRolLabel = nieuweRol.charAt(0).toUpperCase() + nieuweRol.slice(1);
       document.getElementById('bevestig-tekst').textContent = `Wil je wisselen naar ${nieuweRolLabel}?`;
