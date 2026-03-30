@@ -87,8 +87,8 @@
     <li><a href="contact.html">Contact</a></li>
   </ul>
   <div class="nav-cta">
-    <a href="inloggen.html" class="btn btn-ghost">Inloggen</a>
-    <a href="registreren.html" class="btn btn-primary">Gratis aanmelden</a>
+    <a href="inloggen.html" id="nav-inloggen" class="btn btn-ghost">Inloggen</a>
+    <a href="registreren.html" id="nav-aanmelden" class="btn btn-primary">Gratis aanmelden</a>
   </div>
   <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
 </nav>
@@ -100,8 +100,8 @@
   <a href="hoe-het-werkt.html">Hoe het werkt</a>
   <a href="over-ons.html">Over ons</a>
   <a href="contact.html">Contact</a>
-  <a href="inloggen.html" style="color:var(--accent);">Inloggen</a>
-  <a href="registreren.html" style="color:var(--accent);font-weight:600;">Gratis aanmelden</a>
+  <a href="inloggen.html" id="mob-inloggen" style="color:var(--accent);">Inloggen</a>
+  <a href="registreren.html" id="mob-aanmelden" style="color:var(--accent);font-weight:600;">Gratis aanmelden</a>
 </div>
 
 <!-- LADEN -->
@@ -169,6 +169,15 @@
 
     document.getElementById('laden').style.display = 'none';
     document.getElementById('inhoud').style.display = '';
+
+    var ni = document.getElementById('nav-inloggen');
+    var na = document.getElementById('nav-aanmelden');
+    var mi = document.getElementById('mob-inloggen');
+    var ma = document.getElementById('mob-aanmelden');
+    if (ni) { ni.textContent = 'Mijn profiel'; ni.href = 'profiel.html'; }
+    if (na) na.style.display = 'none';
+    if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; }
+    if (ma) ma.style.display = 'none';
 
     var gekozenRol = null;
 
