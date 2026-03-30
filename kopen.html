@@ -251,7 +251,7 @@
 </div>
 
 <!-- CTA -->
-<div class="cta-section">
+<div class="cta-section" id="cta-aanmelden">
   <h2>Klaar om jouw droomhuis te vinden?</h2>
   <p>Gratis aanmelden en direct zoeken tussen honderden woningen.</p>
   <div class="cta-buttons">
@@ -296,6 +296,9 @@
         if (na) na.style.display = 'none';
         if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; }
         if (ma) ma.style.display = 'none';
+
+        var ctaBlok = document.getElementById('cta-aanmelden');
+        if (ctaBlok) ctaBlok.style.display = 'none';
 
         function uitloggen() {
           sb.auth.signOut().then(function() { window.location.href = 'index.html'; });
