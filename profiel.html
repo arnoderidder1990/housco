@@ -63,6 +63,10 @@
     .veld strong { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); margin-bottom: 3px; }
     .veld span { color: var(--ink); font-size: 15px; }
     hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+    .rol-badge { display: inline-block; background: var(--cream); color: var(--ink); font-size: 14px; font-weight: 600; padding: 3px 10px; border-radius: 6px; }
+    .btn-link { background: none; border: none; color: var(--accent); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; padding: 0; text-decoration: underline; }
+    .btn-link:hover { color: #a8341d; }
+    .bevestig-blok { background: var(--cream); border-radius: 12px; padding: 16px; font-size: 14px; color: var(--ink); line-height: 1.5; }
     @media (max-width: 480px) { .kaart { padding: 28px 20px; } }
   </style>
 </head>
@@ -107,7 +111,23 @@
     <h1>Welkom terug!</h1>
     <div class="veld"><strong>Naam</strong><span id="naam"></span></div>
     <div class="veld"><strong>E-mailadres</strong><span id="email"></span></div>
-    <div class="veld"><strong>Rol</strong><span id="rol"></span></div>
+    <div class="veld">
+      <strong>Rol</strong>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:2px;">
+        <span id="rol" class="rol-badge"></span>
+        <button id="wijzig-rol-btn" class="btn-link">Wijzig rol</button>
+      </div>
+    </div>
+    <div id="rol-wijzig-blok" style="display:none;margin-bottom:16px;">
+      <div class="bevestig-blok">
+        <p id="bevestig-tekst"></p>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button id="bevestig-btn" class="btn btn-primary" style="flex:1;">Bevestigen</button>
+          <button id="annuleer-btn" class="btn btn-ghost" style="flex:1;">Annuleren</button>
+        </div>
+        <div id="wijzig-melding" style="margin-top:8px;font-size:13px;color:var(--accent);display:none;"></div>
+      </div>
+    </div>
     <div class="veld"><strong>Lid sinds</strong><span id="lid-sinds"></span></div>
     <hr>
     <div id="rol-actie" style="margin-bottom:12px;"></div>
@@ -193,6 +213,41 @@
       if (na) na.style.display = 'none';
       if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; }
       if (ma) ma.style.display = 'none';
+
+      const nieuweRol = profile.role === 'koper' ? 'verkoper' : 'koper';
+      const nieuweRolLabel = nieuweRol.charAt(0).toUpperCase() + nieuweRol.slice(1);
+      document.getElementById('bevestig-tekst').textContent = `Wil je wisselen naar ${nieuweRolLabel}?`;
+
+      document.getElementById('wijzig-rol-btn').addEventListener('click', () => {
+        document.getElementById('rol-wijzig-blok').style.display = '';
+        document.getElementById('wijzig-rol-btn').style.display = 'none';
+      });
+
+      document.getElementById('annuleer-btn').addEventListener('click', () => {
+        document.getElementById('rol-wijzig-blok').style.display = 'none';
+        document.getElementById('wijzig-rol-btn').style.display = '';
+        document.getElementById('wijzig-melding').style.display = 'none';
+      });
+
+      document.getElementById('bevestig-btn').addEventListener('click', async () => {
+        const btn = document.getElementById('bevestig-btn');
+        const melding = document.getElementById('wijzig-melding');
+        btn.disabled = true;
+        btn.textContent = 'Bezig…';
+        melding.style.display = 'none';
+
+        const { error } = await supabase.from('profiles')
+          .upsert({ id: user.id, role: nieuweRol }, { onConflict: 'id' });
+
+        if (error) {
+          melding.textContent = 'Fout: ' + error.message;
+          melding.style.display = '';
+          btn.disabled = false;
+          btn.textContent = 'Bevestigen';
+        } else {
+          window.location.reload();
+        }
+      });
 
       document.getElementById('uitloggen-btn').addEventListener('click', async () => {
         await supabase.auth.signOut();
