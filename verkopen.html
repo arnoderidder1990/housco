@@ -96,6 +96,30 @@
   .cta-section p { font-size: 17px; color: var(--muted); margin-bottom: 36px; }
   .cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
+  .intake-section { padding: 80px 48px; background: var(--cream); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .intake-inner { max-width: 780px; margin: 0 auto; }
+  .intake-inner h2 { font-family: 'Fraunces', serif; font-size: 38px; letter-spacing: -1px; margin-bottom: 10px; text-align: center; }
+  .intake-inner .sub { font-size: 16px; color: var(--muted); text-align: center; margin-bottom: 40px; }
+  .intake-form { background: var(--white); border: 1px solid var(--border); border-radius: 20px; padding: 40px; box-shadow: 0 4px 24px rgba(61,43,31,.07); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .veld { margin-bottom: 16px; }
+  .veld label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .4px; }
+  .veld input, .veld textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; background: var(--paper); color: var(--ink); outline: none; transition: border-color .2s; resize: vertical; }
+  .veld input:focus, .veld textarea:focus { border-color: var(--green); }
+  .veld textarea { min-height: 100px; }
+  .melding-succes { background: var(--green-light); border: 1px solid var(--green); color: var(--green); padding: 16px 18px; border-radius: 10px; font-size: 15px; font-weight: 500; text-align: center; display: none; margin-bottom: 20px; }
+  .direct-contact { margin-top: 48px; text-align: center; }
+  .direct-contact h3 { font-family: 'Fraunces', serif; font-size: 22px; margin-bottom: 16px; }
+  .contact-items { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+  .contact-item { display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--ink); }
+  .contact-item a { color: var(--accent); font-weight: 600; text-decoration: none; }
+  .contact-item a:hover { text-decoration: underline; }
+  @media (max-width: 900px) {
+    .intake-section { padding: 48px 24px; }
+    .form-row { grid-template-columns: 1fr; }
+    .intake-form { padding: 24px; }
+  }
+
   footer { border-top: 1px solid var(--border); padding: 32px 48px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); }
 
   @media (max-width: 900px) {
@@ -267,13 +291,74 @@
   </div>
 </div>
 
-<!-- CTA -->
-<div class="cta-section">
-  <h2>Klaar om te verkopen?</h2>
-  <p>Meld je woning aan en ontvang persoonlijk advies. Geen verplichtingen, geen kleine lettertjes.</p>
-  <div class="cta-buttons">
-    <a href="contact.html" class="btn btn-green btn-lg">Woning aanmelden</a>
-    <a href="index.html" class="btn btn-ghost btn-lg">← Terug naar home</a>
+<!-- INTAKE FORMULIER -->
+<div class="intake-section" id="aanmelden">
+  <div class="intake-inner">
+    <h2>Meld je woning aan</h2>
+    <p class="sub">Vul het formulier in en we nemen binnen 1 werkdag contact met je op. Geen verplichtingen.</p>
+
+    <div class="intake-form">
+      <div id="intake-succes" class="melding-succes">
+        Bedankt! We nemen binnen 1 werkdag contact met je op.
+      </div>
+
+      <form id="intake-form" action="https://formspree.io/f/meeraewn" method="POST">
+        <div class="form-row">
+          <div class="veld">
+            <label for="voornaam">Voornaam</label>
+            <input type="text" id="voornaam" name="voornaam" placeholder="Jan" required>
+          </div>
+          <div class="veld">
+            <label for="achternaam">Achternaam</label>
+            <input type="text" id="achternaam" name="achternaam" placeholder="de Vries" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="veld">
+            <label for="emailadres">E-mailadres</label>
+            <input type="email" id="emailadres" name="email" placeholder="jan@voorbeeld.nl" required>
+          </div>
+          <div class="veld">
+            <label for="telefoonnummer">Telefoonnummer</label>
+            <input type="tel" id="telefoonnummer" name="telefoonnummer" placeholder="06-12345678">
+          </div>
+        </div>
+        <div class="veld">
+          <label for="adres">Adres woning</label>
+          <input type="text" id="adres" name="adres_woning" placeholder="Keizersgracht 123" required>
+        </div>
+        <div class="form-row">
+          <div class="veld">
+            <label for="postcode">Postcode</label>
+            <input type="text" id="postcode" name="postcode" placeholder="1234 AB" required>
+          </div>
+          <div class="veld">
+            <label for="plaats">Plaats</label>
+            <input type="text" id="plaats" name="plaats" placeholder="Amsterdam" required>
+          </div>
+        </div>
+        <div class="veld">
+          <label for="omschrijving">Vertel ons over je woning</label>
+          <textarea id="omschrijving" name="omschrijving" placeholder="Bijv. type woning, bouwjaar, vraagprijs, bijzonderheden…"></textarea>
+        </div>
+        <input type="hidden" name="_subject" value="Nieuwe woningaanmelding via Housco">
+        <button type="submit" class="btn btn-green btn-lg" style="width:100%;">Meld je woning aan</button>
+      </form>
+    </div>
+
+    <div class="direct-contact">
+      <h3>Liever direct contact?</h3>
+      <div class="contact-items">
+        <div class="contact-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.18 1.22 2 2 0 012.18 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+          <a href="tel:0600000000">06-00000000</a>
+        </div>
+        <div class="contact-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <a href="mailto:info@housco.nl">info@housco.nl</a>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -294,6 +379,35 @@
     document.getElementById('mobileMenu').classList.toggle('open');
     document.getElementById('hamburger').classList.toggle('open');
   }
+</script>
+
+<script>
+  document.getElementById('intake-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var form = this;
+    var btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Bezig…';
+
+    var data = new FormData(form);
+    fetch(form.action, {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    }).then(function(res) {
+      btn.disabled = false;
+      btn.textContent = 'Meld je woning aan';
+      if (res.ok) {
+        form.style.display = 'none';
+        document.getElementById('intake-succes').style.display = 'block';
+      } else {
+        btn.textContent = 'Er ging iets mis — probeer opnieuw';
+      }
+    }).catch(function() {
+      btn.disabled = false;
+      btn.textContent = 'Er ging iets mis — probeer opnieuw';
+    });
+  });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
