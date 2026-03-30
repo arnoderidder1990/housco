@@ -424,6 +424,18 @@
         var na = document.getElementById('nav-aanmelden');
         if (ni) { ni.textContent = 'Mijn profiel'; ni.href = 'profiel.html'; }
         if (na) na.style.display = 'none';
+
+        function uitloggen() {
+          sb.auth.signOut().then(function() { window.location.href = 'index.html'; });
+        }
+        var navCta = document.querySelector('.nav-cta');
+        if (navCta) {
+          var uitBtn = document.createElement('button');
+          uitBtn.className = 'btn btn-ghost';
+          uitBtn.textContent = 'Uitloggen';
+          uitBtn.addEventListener('click', uitloggen);
+          navCta.appendChild(uitBtn);
+        }
       }
     });
   })();

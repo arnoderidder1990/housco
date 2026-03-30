@@ -179,6 +179,27 @@
     if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; }
     if (ma) ma.style.display = 'none';
 
+    function uitloggenNav() {
+      supabase.auth.signOut().then(function() { window.location.href = 'index.html'; });
+    }
+    var navCta = document.querySelector('.nav-cta');
+    if (navCta) {
+      var uitBtn = document.createElement('button');
+      uitBtn.className = 'btn btn-ghost';
+      uitBtn.textContent = 'Uitloggen';
+      uitBtn.addEventListener('click', uitloggenNav);
+      navCta.appendChild(uitBtn);
+    }
+    var mobileMenuEl = document.getElementById('mobileMenu');
+    if (mobileMenuEl) {
+      var mobUit = document.createElement('a');
+      mobUit.href = '#';
+      mobUit.style.cssText = 'color:var(--accent);';
+      mobUit.textContent = 'Uitloggen';
+      mobUit.addEventListener('click', function(e) { e.preventDefault(); uitloggenNav(); });
+      mobileMenuEl.appendChild(mobUit);
+    }
+
     var gekozenRol = null;
 
     function kiesRol(rol) {
