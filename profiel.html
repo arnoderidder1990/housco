@@ -67,6 +67,10 @@
     .btn-link { background: none; border: none; color: var(--accent); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; padding: 0; text-decoration: underline; }
     .btn-link:hover { color: #a8341d; }
     .bevestig-blok { background: var(--cream); border-radius: 12px; padding: 16px; font-size: 14px; color: var(--ink); line-height: 1.5; }
+    .veld-edit { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+    .veld-edit input { flex: 1; min-width: 0; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); background: var(--white); }
+    .veld-edit input:focus { outline: none; border-color: var(--accent); }
+    .btn-sm { padding: 7px 14px; font-size: 13px; border-radius: 7px; }
     @media (max-width: 480px) { .kaart { padding: 28px 20px; } }
   </style>
 </head>
@@ -129,6 +133,39 @@
       </div>
     </div>
     <div class="veld"><strong>Lid sinds</strong><span id="lid-sinds"></span></div>
+
+    <div class="veld">
+      <strong>Telefoonnummer</strong>
+      <div id="telefoon-view" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:2px;">
+        <span id="telefoon-waarde" style="color:var(--ink);font-size:15px;"></span>
+        <button id="telefoon-bewerken-btn" class="btn-link">Bewerken</button>
+      </div>
+      <div id="telefoon-edit" style="display:none;margin-top:4px;">
+        <div class="veld-edit">
+          <input type="tel" id="telefoon-input" placeholder="+31 6 12345678">
+          <button id="telefoon-opslaan-btn" class="btn btn-primary btn-sm">Opslaan</button>
+          <button id="telefoon-annuleer-btn" class="btn-link">Annuleren</button>
+        </div>
+        <div id="telefoon-melding" style="margin-top:6px;font-size:13px;color:var(--accent);display:none;"></div>
+      </div>
+    </div>
+
+    <div class="veld">
+      <strong>Woonplaats</strong>
+      <div id="woonplaats-view" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:2px;">
+        <span id="woonplaats-waarde" style="color:var(--ink);font-size:15px;"></span>
+        <button id="woonplaats-bewerken-btn" class="btn-link">Bewerken</button>
+      </div>
+      <div id="woonplaats-edit" style="display:none;margin-top:4px;">
+        <div class="veld-edit">
+          <input type="text" id="woonplaats-input" placeholder="bijv. Amsterdam">
+          <button id="woonplaats-opslaan-btn" class="btn btn-primary btn-sm">Opslaan</button>
+          <button id="woonplaats-annuleer-btn" class="btn-link">Annuleren</button>
+        </div>
+        <div id="woonplaats-melding" style="margin-top:6px;font-size:13px;color:var(--accent);display:none;"></div>
+      </div>
+    </div>
+
     <hr>
     <div id="rol-actie" style="margin-bottom:12px;"></div>
     <button id="uitloggen-btn" class="btn btn-ghost" style="width:100%;">Uitloggen</button>
@@ -173,7 +210,7 @@
     // Check role in profiles table
     const { data: profile } = await supabase
       .from('profiles')
-      .select('role')
+      .select('role, telefoonnummer, woonplaats')
       .eq('id', user.id)
       .single();
 
@@ -193,6 +230,59 @@
       document.getElementById('email').textContent = user.email;
       document.getElementById('rol').textContent = rolLabel;
       document.getElementById('lid-sinds').textContent = lidSinds;
+
+      document.getElementById('telefoon-waarde').textContent = profile.telefoonnummer || '—';
+      document.getElementById('telefoon-input').value = profile.telefoonnummer || '';
+      document.getElementById('woonplaats-waarde').textContent = profile.woonplaats || '—';
+      document.getElementById('woonplaats-input').value = profile.woonplaats || '';
+
+      function setupEditVeld(veld, kolom) {
+        const viewEl = document.getElementById(veld + '-view');
+        const editEl = document.getElementById(veld + '-edit');
+        const waarde = document.getElementById(veld + '-waarde');
+        const input  = document.getElementById(veld + '-input');
+        const opslaan  = document.getElementById(veld + '-opslaan-btn');
+        const annuleer = document.getElementById(veld + '-annuleer-btn');
+        const melding  = document.getElementById(veld + '-melding');
+
+        document.getElementById(veld + '-bewerken-btn').addEventListener('click', () => {
+          viewEl.style.display = 'none';
+          editEl.style.display = '';
+          input.focus();
+        });
+
+        annuleer.addEventListener('click', () => {
+          editEl.style.display = 'none';
+          viewEl.style.display = '';
+          melding.style.display = 'none';
+        });
+
+        opslaan.addEventListener('click', async () => {
+          opslaan.disabled = true;
+          opslaan.textContent = 'Bezig…';
+          melding.style.display = 'none';
+
+          const nieuw = input.value.trim();
+          const { error } = await supabase.from('profiles')
+            .update({ [kolom]: nieuw || null })
+            .eq('id', user.id);
+
+          opslaan.disabled = false;
+          opslaan.textContent = 'Opslaan';
+
+          if (error) {
+            melding.textContent = 'Fout: ' + error.message;
+            melding.style.display = '';
+          } else {
+            waarde.textContent = nieuw || '—';
+            editEl.style.display = 'none';
+            viewEl.style.display = '';
+          }
+        });
+      }
+
+      setupEditVeld('telefoon', 'telefoonnummer');
+      setupEditVeld('woonplaats', 'woonplaats');
 
       if (profile.role === 'koper') {
         document.getElementById('rol-actie').innerHTML =
