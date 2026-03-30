@@ -146,20 +146,20 @@
   }
 </script>
 
-<script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-  const supabase = createClient(
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  var sb = supabase.createClient(
     'https://vzfysqedzlkyqviwkbuw.supabase.co',
     'sb_publishable_0NbfNpK8qzE6Ec5IEqmrJg_0wLvnTp4'
   );
 
-  supabase.auth.getSession().then(({ data: { session } }) => {
+  sb.auth.getSession().then(function(result) {
+    var session = result.data.session;
     if (session) {
-      const ni = document.getElementById('nav-inloggen');
-      const na = document.getElementById('nav-aanmelden');
-      const mi = document.getElementById('mob-inloggen');
-      const ma = document.getElementById('mob-aanmelden');
+      var ni = document.getElementById('nav-inloggen');
+      var na = document.getElementById('nav-aanmelden');
+      var mi = document.getElementById('mob-inloggen');
+      var ma = document.getElementById('mob-aanmelden');
       if (ni) { ni.textContent = 'Mijn profiel'; ni.href = 'profiel.html'; }
       if (na) na.style.display = 'none';
       if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; }
@@ -167,30 +167,30 @@
     }
   });
 
-  document.getElementById('inlog-form').addEventListener('submit', async (e) => {
+  document.getElementById('inlog-form').addEventListener('submit', function(e) {
     e.preventDefault();
-    const melding = document.getElementById('melding');
-    const btn = document.getElementById('submit-btn');
+    var melding = document.getElementById('melding');
+    var btn = document.getElementById('submit-btn');
     melding.className = 'melding';
     melding.textContent = '';
 
-    const email = document.getElementById('email').value.trim();
-    const wachtwoord = document.getElementById('wachtwoord').value;
+    var email = document.getElementById('email').value.trim();
+    var wachtwoord = document.getElementById('wachtwoord').value;
 
     btn.disabled = true;
     btn.textContent = 'Bezig…';
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password: wachtwoord });
+    sb.auth.signInWithPassword({ email: email, password: wachtwoord }).then(function(result) {
+      btn.disabled = false;
+      btn.textContent = 'Inloggen';
 
-    btn.disabled = false;
-    btn.textContent = 'Inloggen';
-
-    if (error) {
-      melding.textContent = error.message;
-      melding.className = 'melding fout';
-    } else {
-      window.location.href = 'profiel.html';
-    }
+      if (result.error) {
+        melding.textContent = result.error.message;
+        melding.className = 'melding fout';
+      } else {
+        window.location.href = 'profiel.html';
+      }
+    });
   });
 </script>
 </body>
