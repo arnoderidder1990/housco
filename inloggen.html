@@ -106,6 +106,7 @@
     <h1>Inloggen</h1>
     <p class="sub">Log in op je Housco account.</p>
 
+    <div id="js-fout" style="background:#fff0f0;border:1px solid #fcc;color:#c00;padding:12px 14px;border-radius:8px;margin-bottom:12px;font-size:13px;display:none;word-break:break-all;"></div>
     <div id="melding" class="melding"></div>
 
     <form id="inlog-form">
@@ -117,7 +118,7 @@
         <label for="wachtwoord">Wachtwoord</label>
         <input type="password" id="wachtwoord" name="wachtwoord" placeholder="Uw wachtwoord" required>
       </div>
-      <button type="submit" id="submit-btn" class="btn btn-primary btn-lg" style="width:100%;">Inloggen</button>
+      <button type="button" id="submit-btn" class="btn btn-primary btn-lg" style="width:100%;">Inloggen</button>
     </form>
 
     <div class="onderaan">
@@ -148,58 +149,84 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-  var sb = supabase.createClient(
-    'https://vzfysqedzlkyqviwkbuw.supabase.co',
-    'sb_publishable_0NbfNpK8qzE6Ec5IEqmrJg_0wLvnTp4'
-  );
+  // Catch any JS errors and show them visibly on the page
+  window.onerror = function(msg, src, line) {
+    var el = document.getElementById('js-fout');
+    if (el) { el.textContent = 'JS fout: ' + msg + ' (regel ' + line + ')'; el.style.display = 'block'; }
+    return false;
+  };
 
-  sb.auth.getSession().then(function(result) {
-    var session = result.data.session;
-    if (session) {
-      var ni = document.getElementById('nav-inloggen');
-      var na = document.getElementById('nav-aanmelden');
-      var mi = document.getElementById('mob-inloggen');
-      var ma = document.getElementById('mob-aanmelden');
-      if (ni) { ni.textContent = 'Mijn profiel'; ni.href = 'profiel.html'; }
-      if (na) na.style.display = 'none';
-      if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; }
-      if (ma) ma.style.display = 'none';
+  var sb;
+  try {
+    sb = supabase.createClient(
+      'https://vzfysqedzlkyqviwkbuw.supabase.co',
+      'sb_publishable_0NbfNpK8qzE6Ec5IEqmrJg_0wLvnTp4'
+    );
+  } catch (err) {
+    var el = document.getElementById('js-fout');
+    if (el) { el.textContent = 'Supabase init fout: ' + err.message; el.style.display = 'block'; }
+  }
 
-      const uitloggen = () => sb.auth.signOut().then(() => { window.location.href = 'index.html'; });
-      const navCta = document.querySelector('.nav-cta');
-      if (navCta) {
-        const uitBtn = document.createElement('button');
-        uitBtn.className = 'btn btn-ghost';
-        uitBtn.textContent = 'Uitloggen';
-        uitBtn.addEventListener('click', uitloggen);
-        navCta.appendChild(uitBtn);
+  if (sb) {
+    sb.auth.getSession().then(function(result) {
+      var session = result.data.session;
+      if (session) {
+        var ni = document.getElementById('nav-inloggen');
+        var na = document.getElementById('nav-aanmelden');
+        var mi = document.getElementById('mob-inloggen');
+        var ma = document.getElementById('mob-aanmelden');
+        if (ni) { ni.textContent = 'Mijn profiel'; ni.href = 'profiel.html'; }
+        if (na) na.style.display = 'none';
+        if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; }
+        if (ma) ma.style.display = 'none';
+
+        function uitloggen() { sb.auth.signOut().then(function() { window.location.href = 'index.html'; }); }
+        var navCta = document.querySelector('.nav-cta');
+        if (navCta) {
+          var uitBtn = document.createElement('button');
+          uitBtn.className = 'btn btn-ghost';
+          uitBtn.textContent = 'Uitloggen';
+          uitBtn.addEventListener('click', uitloggen);
+          navCta.appendChild(uitBtn);
+        }
+        var mobileMenuEl = document.getElementById('mobileMenu');
+        if (mobileMenuEl) {
+          var mobUit = document.createElement('a');
+          mobUit.href = '#';
+          mobUit.style.cssText = 'color:var(--accent);';
+          mobUit.textContent = 'Uitloggen';
+          mobUit.addEventListener('click', function(e) { e.preventDefault(); uitloggen(); });
+          mobileMenuEl.appendChild(mobUit);
+        }
       }
-      const mobileMenuEl = document.getElementById('mobileMenu');
-      if (mobileMenuEl) {
-        const mobUit = document.createElement('a');
-        mobUit.href = '#';
-        mobUit.style.cssText = 'color:var(--accent);';
-        mobUit.textContent = 'Uitloggen';
-        mobUit.addEventListener('click', e => { e.preventDefault(); uitloggen(); });
-        mobileMenuEl.appendChild(mobUit);
-      }
-    }
-  });
+    });
+  }
 
-  document.getElementById('inlog-form').addEventListener('submit', function(e) {
-    e.preventDefault();
+  function voerInlogUit() {
+    console.log('Inloggen handler gestart');
     var melding = document.getElementById('melding');
     var btn = document.getElementById('submit-btn');
+    var jsFout = document.getElementById('js-fout');
+    jsFout.style.display = 'none';
     melding.className = 'melding';
     melding.textContent = '';
 
     var email = document.getElementById('email').value.trim();
     var wachtwoord = document.getElementById('wachtwoord').value;
 
+    if (!email || !wachtwoord) {
+      melding.textContent = 'Vul je e-mailadres en wachtwoord in.';
+      melding.className = 'melding fout';
+      return;
+    }
+
     btn.disabled = true;
     btn.textContent = 'Bezig…';
 
+    console.log('Supabase signIn aanroepen voor:', email);
+
     sb.auth.signInWithPassword({ email: email, password: wachtwoord }).then(function(result) {
+      console.log('Supabase signIn resultaat:', result.error ? result.error.message : 'OK');
       btn.disabled = false;
       btn.textContent = 'Inloggen';
 
@@ -230,7 +257,26 @@
       } else {
         window.location.href = 'profiel.html';
       }
+    }).catch(function(err) {
+      console.error('Onverwachte fout:', err);
+      btn.disabled = false;
+      btn.textContent = 'Inloggen';
+      var jsFout = document.getElementById('js-fout');
+      if (jsFout) { jsFout.textContent = 'Onverwachte fout: ' + err.message; jsFout.style.display = 'block'; }
     });
+  }
+
+  // Button click: primary trigger, works reliably on iOS Safari
+  document.getElementById('submit-btn').addEventListener('click', function() {
+    console.log('Submit knop aangeklikt');
+    voerInlogUit();
+  });
+
+  // Form submit: handles Enter key in input fields
+  document.getElementById('inlog-form').addEventListener('submit', function(e) {
+    console.log('Form submit event');
+    e.preventDefault();
+    voerInlogUit();
   });
 </script>
 </body>
