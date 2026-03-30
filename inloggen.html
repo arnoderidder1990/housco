@@ -266,15 +266,7 @@
     });
   }
 
-  // Listen to input/change/blur on both fields so iOS password managers
-  // properly commit autofilled values before the click handler reads .value
-  ['input', 'change', 'blur'].forEach(function(evt) {
-    document.getElementById('email').addEventListener(evt, function() {});
-    document.getElementById('wachtwoord').addEventListener(evt, function() {});
-  });
-
   // Button click: primary trigger, works reliably on iOS Safari
-  // Values are always read from .value at call time inside voerInlogUit()
   document.getElementById('submit-btn').addEventListener('click', function() {
     console.log('Submit knop aangeklikt');
     voerInlogUit();
