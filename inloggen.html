@@ -117,7 +117,7 @@
         <label for="wachtwoord">Wachtwoord</label>
         <input type="password" id="wachtwoord" name="wachtwoord" placeholder="Uw wachtwoord" required>
       </div>
-      <button type="submit" id="submit-btn" class="btn btn-primary btn-lg" style="width:100%;">Inloggen</button>
+      <button type="button" id="submit-btn" class="btn btn-primary btn-lg" style="width:100%;">Inloggen</button>
     </form>
 
     <div class="onderaan">
@@ -148,90 +148,107 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-  var sb = supabase.createClient(
-    'https://vzfysqedzlkyqviwkbuw.supabase.co',
-    'sb_publishable_0NbfNpK8qzE6Ec5IEqmrJg_0wLvnTp4'
-  );
+  (function() {
+    var sb = supabase.createClient(
+      'https://vzfysqedzlkyqviwkbuw.supabase.co',
+      'sb_publishable_0NbfNpK8qzE6Ec5IEqmrJg_0wLvnTp4'
+    );
 
-  sb.auth.getSession().then(function(result) {
-    var session = result.data.session;
-    if (session) {
-      var ni = document.getElementById('nav-inloggen');
-      var na = document.getElementById('nav-aanmelden');
-      var mi = document.getElementById('mob-inloggen');
-      var ma = document.getElementById('mob-aanmelden');
-      if (ni) { ni.textContent = 'Mijn profiel'; ni.href = 'profiel.html'; }
-      if (na) na.style.display = 'none';
-      if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; }
-      if (ma) ma.style.display = 'none';
+    sb.auth.getSession().then(function(r) {
+      if (r.data && r.data.session) {
+        var ni = document.getElementById('nav-inloggen');
+        var na = document.getElementById('nav-aanmelden');
+        var mi = document.getElementById('mob-inloggen');
+        var ma = document.getElementById('mob-aanmelden');
+        if (ni) { ni.textContent = 'Mijn profiel'; ni.href = 'profiel.html'; }
+        if (na) na.style.display = 'none';
+        if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; }
+        if (ma) ma.style.display = 'none';
 
-      const uitloggen = () => sb.auth.signOut().then(() => { window.location.href = 'index.html'; });
-      const navCta = document.querySelector('.nav-cta');
-      if (navCta) {
-        const uitBtn = document.createElement('button');
-        uitBtn.className = 'btn btn-ghost';
-        uitBtn.textContent = 'Uitloggen';
-        uitBtn.addEventListener('click', uitloggen);
-        navCta.appendChild(uitBtn);
-      }
-      const mobileMenuEl = document.getElementById('mobileMenu');
-      if (mobileMenuEl) {
-        const mobUit = document.createElement('a');
-        mobUit.href = '#';
-        mobUit.style.cssText = 'color:var(--accent);';
-        mobUit.textContent = 'Uitloggen';
-        mobUit.addEventListener('click', e => { e.preventDefault(); uitloggen(); });
-        mobileMenuEl.appendChild(mobUit);
-      }
-    }
-  });
-
-  document.getElementById('inlog-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    var melding = document.getElementById('melding');
-    var btn = document.getElementById('submit-btn');
-    melding.className = 'melding';
-    melding.textContent = '';
-
-    var email = document.getElementById('email').value.trim();
-    var wachtwoord = document.getElementById('wachtwoord').value;
-
-    btn.disabled = true;
-    btn.textContent = 'Bezig…';
-
-    sb.auth.signInWithPassword({ email: email, password: wachtwoord }).then(function(result) {
-      btn.disabled = false;
-      btn.textContent = 'Inloggen';
-
-      if (result.error) {
-        var foutmeldingen = {
-          'Invalid login credentials':       'Ongeldig e-mailadres of wachtwoord.',
-          'Email not confirmed':             'E-mailadres is nog niet bevestigd. Controleer je inbox.',
-          'Too many requests':               'Te veel pogingen. Wacht even en probeer het opnieuw.',
-          'User not found':                  'Er bestaat geen account met dit e-mailadres.',
-          'Invalid email or password':       'Ongeldig e-mailadres of wachtwoord.',
-          'Email link is invalid or has expired': 'De link is ongeldig of verlopen.',
-          'Password should be at least 6 characters': 'Wachtwoord moet minimaal 6 tekens bevatten.',
-          'User already registered':         'Er bestaat al een account met dit e-mailadres.',
-          'Unable to validate email address: invalid format': 'Ongeldig e-mailadres.',
-        };
-        var engMsg = result.error.message || '';
-        var nlMsg = foutmeldingen[engMsg];
-        if (!nlMsg) {
-          for (var key in foutmeldingen) {
-            if (engMsg.toLowerCase().indexOf(key.toLowerCase()) !== -1) {
-              nlMsg = foutmeldingen[key];
-              break;
-            }
-          }
+        function uitloggen() {
+          sb.auth.signOut().then(function() { window.location.href = 'index.html'; });
         }
-        melding.textContent = nlMsg || 'Er is een fout opgetreden. Probeer het opnieuw.';
-        melding.className = 'melding fout';
-      } else {
-        window.location.href = 'profiel.html';
+        var navCta = document.querySelector('.nav-cta');
+        if (navCta) {
+          var uitBtn = document.createElement('button');
+          uitBtn.className = 'btn btn-ghost';
+          uitBtn.textContent = 'Uitloggen';
+          uitBtn.addEventListener('click', uitloggen);
+          navCta.appendChild(uitBtn);
+        }
+        var mobileMenuEl = document.getElementById('mobileMenu');
+        if (mobileMenuEl) {
+          var mobUit = document.createElement('a');
+          mobUit.href = '#';
+          mobUit.style.cssText = 'color:var(--accent);';
+          mobUit.textContent = 'Uitloggen';
+          mobUit.addEventListener('click', function(e) { e.preventDefault(); uitloggen(); });
+          mobileMenuEl.appendChild(mobUit);
+        }
       }
     });
-  });
+
+    function voerInlogUit() {
+      var melding = document.getElementById('melding');
+      var btn = document.getElementById('submit-btn');
+      melding.className = 'melding';
+      melding.textContent = '';
+
+      var email = document.getElementById('email').value.trim();
+      var wachtwoord = document.getElementById('wachtwoord').value;
+
+      if (!email || !wachtwoord) {
+        melding.textContent = 'Vul je e-mailadres en wachtwoord in.';
+        melding.className = 'melding fout';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Bezig…';
+
+      sb.auth.signInWithPassword({ email: email, password: wachtwoord }).then(function(result) {
+        btn.disabled = false;
+        btn.textContent = 'Inloggen';
+
+        if (result.error) {
+          var foutmeldingen = {
+            'Invalid login credentials':       'Ongeldig e-mailadres of wachtwoord.',
+            'Email not confirmed':             'E-mailadres is nog niet bevestigd. Controleer je inbox.',
+            'Too many requests':               'Te veel pogingen. Wacht even en probeer het opnieuw.',
+            'User not found':                  'Er bestaat geen account met dit e-mailadres.',
+            'Invalid email or password':       'Ongeldig e-mailadres of wachtwoord.',
+            'Email link is invalid or has expired': 'De link is ongeldig of verlopen.',
+            'Password should be at least 6 characters': 'Wachtwoord moet minimaal 6 tekens bevatten.',
+            'User already registered':         'Er bestaat al een account met dit e-mailadres.',
+            'Unable to validate email address: invalid format': 'Ongeldig e-mailadres.',
+          };
+          var engMsg = result.error.message || '';
+          var nlMsg = foutmeldingen[engMsg];
+          if (!nlMsg) {
+            for (var key in foutmeldingen) {
+              if (engMsg.toLowerCase().indexOf(key.toLowerCase()) !== -1) {
+                nlMsg = foutmeldingen[key];
+                break;
+              }
+            }
+          }
+          melding.textContent = nlMsg || 'Er is een fout opgetreden. Probeer het opnieuw.';
+          melding.className = 'melding fout';
+        } else {
+          window.location.href = 'profiel.html';
+        }
+      });
+    }
+
+    document.getElementById('submit-btn').addEventListener('click', function() {
+      voerInlogUit();
+    });
+
+    document.getElementById('inlog-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      voerInlogUit();
+    });
+  })();
 </script>
 </body>
 </html>
