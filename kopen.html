@@ -55,12 +55,6 @@
   .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .4px; }
   .form-group input, .form-group select { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; background: var(--paper); color: var(--ink); outline: none; transition: border-color .2s; }
   .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .locatie-row { display: grid; grid-template-columns: 1fr 110px; gap: 8px; }
-  .locatie-row input, .locatie-row select { width: 100%; }
-  .prijs-fout { display: none; background: var(--accent-light); color: var(--accent); border: 1px solid #e8c0b8; border-radius: 8px; padding: 8px 12px; font-size: 13px; margin-bottom: 10px; }
-  .form-group select[multiple] { padding: 6px 8px; height: 110px; }
-  .veld-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
   .section { padding: 80px 48px; max-width: 1200px; margin: 0 auto; }
   .section h2 { font-family: 'Fraunces', serif; font-size: 38px; letter-spacing: -1px; margin-bottom: 48px; text-align: center; }
@@ -172,206 +166,24 @@
     </div>
     <div class="search-card">
       <h3>Zoek een woning</h3>
-
-      <div class="form-group">
-        <label>Locatie</label>
-        <div class="locatie-row">
-          <input type="text" id="zoek-locatie" placeholder="Stad, wijk of postcode...">
-          <select id="zoekradius">
-            <option value="">Alle</option>
+      <form id="zoek-form" action="zoekresultaten.html">
+        <div class="form-group">
+          <input type="text" name="q" id="zoek-q" placeholder="Woonplaats of postcode" autocomplete="off" style="font-size:16px;">
+        </div>
+        <div class="form-group">
+          <label>Zoekstraal</label>
+          <select name="straal" id="zoek-straal">
             <option value="1">+ 1 km</option>
             <option value="2">+ 2 km</option>
-            <option value="5">+ 5 km</option>
+            <option value="5" selected>+ 5 km</option>
             <option value="10">+ 10 km</option>
             <option value="25">+ 25 km</option>
-            <option value="50">&gt; 50 km</option>
+            <option value="50">+ 50 km</option>
+            <option value="0">Heel Nederland</option>
           </select>
         </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Min. prijs</label>
-          <select id="min-prijs">
-            <option value="">Geen minimum</option>
-            <option value="100000">€ 100.000</option>
-            <option value="150000">€ 150.000</option>
-            <option value="200000">€ 200.000</option>
-            <option value="250000">€ 250.000</option>
-            <option value="300000">€ 300.000</option>
-            <option value="350000">€ 350.000</option>
-            <option value="400000">€ 400.000</option>
-            <option value="450000">€ 450.000</option>
-            <option value="500000">€ 500.000</option>
-            <option value="550000">€ 550.000</option>
-            <option value="600000">€ 600.000</option>
-            <option value="650000">€ 650.000</option>
-            <option value="700000">€ 700.000</option>
-            <option value="750000">€ 750.000</option>
-            <option value="800000">€ 800.000</option>
-            <option value="850000">€ 850.000</option>
-            <option value="900000">€ 900.000</option>
-            <option value="950000">€ 950.000</option>
-            <option value="1000000">€ 1.000.000</option>
-            <option value="1000001">&gt; € 1.000.000</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Max. prijs</label>
-          <select id="max-prijs">
-            <option value="">Geen maximum</option>
-            <option value="100000">€ 100.000</option>
-            <option value="150000">€ 150.000</option>
-            <option value="200000">€ 200.000</option>
-            <option value="250000">€ 250.000</option>
-            <option value="300000">€ 300.000</option>
-            <option value="350000">€ 350.000</option>
-            <option value="400000">€ 400.000</option>
-            <option value="450000">€ 450.000</option>
-            <option value="500000">€ 500.000</option>
-            <option value="550000">€ 550.000</option>
-            <option value="600000">€ 600.000</option>
-            <option value="650000">€ 650.000</option>
-            <option value="700000">€ 700.000</option>
-            <option value="750000">€ 750.000</option>
-            <option value="800000">€ 800.000</option>
-            <option value="850000">€ 850.000</option>
-            <option value="900000">€ 900.000</option>
-            <option value="950000">€ 950.000</option>
-            <option value="1000000">€ 1.000.000</option>
-            <option value="1000001">&gt; € 1.000.000</option>
-          </select>
-        </div>
-      </div>
-      <div id="prijs-fout" class="prijs-fout">Maximumprijs kan niet lager zijn dan de minimumprijs.</div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Type woning</label>
-          <select id="type-woning">
-            <option value="">Alle types</option>
-            <option value="appartement">Appartement</option>
-            <option value="tussenwoning">Tussenwoning</option>
-            <option value="hoekwoning">Hoekwoning</option>
-            <option value="twee-onder-een-kap">Twee-onder-een-kapwoning</option>
-            <option value="vrijstaand">Vrijstaand</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Min. kamers</label>
-          <select id="min-kamers">
-            <option value="">Alle</option>
-            <option value="2">2+</option>
-            <option value="3">3+</option>
-            <option value="4">4+</option>
-            <option value="5">5+</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Min. woonoppervlakte</label>
-          <select id="min-woon">
-            <option value="">Geen minimum</option>
-            <option value="25">25 m²</option>
-            <option value="50">50 m²</option>
-            <option value="75">75 m²</option>
-            <option value="100">100 m²</option>
-            <option value="125">125 m²</option>
-            <option value="150">150 m²</option>
-            <option value="200">200 m²</option>
-            <option value="250">250 m²</option>
-            <option value="300">&gt; 300 m²</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Max. woonoppervlakte</label>
-          <select id="max-woon">
-            <option value="">Geen maximum</option>
-            <option value="25">25 m²</option>
-            <option value="50">50 m²</option>
-            <option value="75">75 m²</option>
-            <option value="100">100 m²</option>
-            <option value="125">125 m²</option>
-            <option value="150">150 m²</option>
-            <option value="200">200 m²</option>
-            <option value="250">250 m²</option>
-            <option value="300">&gt; 300 m²</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Min. perceeloppervlakte</label>
-          <select id="min-perceel">
-            <option value="">Geen minimum</option>
-            <option value="50">50 m²</option>
-            <option value="100">100 m²</option>
-            <option value="150">150 m²</option>
-            <option value="200">200 m²</option>
-            <option value="250">250 m²</option>
-            <option value="500">500 m²</option>
-            <option value="1000">1.000 m²</option>
-            <option value="1001">&gt; 1.000 m²</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Max. perceeloppervlakte</label>
-          <select id="max-perceel">
-            <option value="">Geen maximum</option>
-            <option value="50">50 m²</option>
-            <option value="100">100 m²</option>
-            <option value="150">150 m²</option>
-            <option value="200">200 m²</option>
-            <option value="250">250 m²</option>
-            <option value="500">500 m²</option>
-            <option value="1000">1.000 m²</option>
-            <option value="1001">&gt; 1.000 m²</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Energielabel</label>
-          <select id="energielabel" multiple>
-            <option value="A+++++">A+++++</option>
-            <option value="A++++">A++++</option>
-            <option value="A+++">A+++</option>
-            <option value="A++">A++</option>
-            <option value="A+">A+</option>
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-            <option value="D">D</option>
-            <option value="E">E</option>
-            <option value="F">F</option>
-            <option value="G">G</option>
-          </select>
-          <div class="veld-hint">Houd Ctrl / ⌘ ingedrukt voor meerdere labels</div>
-        </div>
-        <div class="form-group">
-          <label>Bouwperiode</label>
-          <select id="bouwperiode">
-            <option value="">Alle periodes</option>
-            <option value="voor-1906">Voor 1906</option>
-            <option value="1906-1930">1906–1930</option>
-            <option value="1931-1944">1931–1944</option>
-            <option value="1945-1959">1945–1959</option>
-            <option value="1960-1970">1960–1970</option>
-            <option value="1971-1980">1971–1980</option>
-            <option value="1981-1990">1981–1990</option>
-            <option value="1991-2000">1991–2000</option>
-            <option value="2001-2010">2001–2010</option>
-            <option value="2011-2020">2011–2020</option>
-            <option value="na-2020">Na 2020</option>
-          </select>
-        </div>
-      </div>
-
-      <button id="zoek-btn" class="btn btn-primary" style="width:100%;padding:13px;font-size:15px;border-radius:10px;">🔍 Zoek woningen</button>
+        <button type="submit" class="btn btn-primary" style="width:100%;padding:13px;font-size:15px;border-radius:10px;">🔍 Zoek woningen</button>
+      </form>
     </div>
   </div>
 </div>
@@ -457,25 +269,6 @@
     document.getElementById('mobileMenu').classList.toggle('open');
     document.getElementById('hamburger').classList.toggle('open');
   }
-</script>
-
-<script>
-  function valideerPrijs() {
-    var minVal = document.getElementById('min-prijs').value;
-    var maxVal = document.getElementById('max-prijs').value;
-    var fout = document.getElementById('prijs-fout');
-    if (minVal && maxVal && parseInt(maxVal) < parseInt(minVal)) {
-      fout.style.display = 'block';
-      return false;
-    }
-    fout.style.display = 'none';
-    return true;
-  }
-  document.getElementById('min-prijs').addEventListener('change', valideerPrijs);
-  document.getElementById('max-prijs').addEventListener('change', valideerPrijs);
-  document.getElementById('zoek-btn').addEventListener('click', function() {
-    valideerPrijs();
-  });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
