@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zoekresultaten – Housco</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,700;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MQ78KCH5YV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-MQ78KCH5YV');
+</script>
+<style>
+  :root {
+    --ink: #2d1f17; --paper: #faf7f4; --cream: #ede9e3;
+    --accent: #c8442a; --accent-light: #f0e8e6;
+    --green: #2a6b4a; --green-light: #e3ede8;
+    --muted: #8a7060; --border: #e0d8d0; --white: #ffffff;
+    --dark: #3d2b1f;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: var(--white); border-bottom: 1px solid var(--border); padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color .2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--ink); font-weight: 600; }
+  .nav-cta { display: flex; gap: 12px; align-items: center; }
+  .btn { padding: 10px 20px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; text-decoration: none; display: inline-block; }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--cream); }
+  .btn-primary { background: var(--accent); color: var(--white); }
+  .btn-primary:hover { background: #a8341d; }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 8px; }
+  .hamburger span { width: 24px; height: 2px; background: var(--ink); border-radius: 2px; transition: all .3s; display: block; }
+  .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+  .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: var(--white); border-bottom: 1px solid var(--border); padding: 16px 24px; z-index: 99; box-shadow: 0 8px 24px rgba(61,43,31,.08); }
+  .mobile-menu.open { display: block; }
+  .mobile-menu a { display: block; padding: 14px 0; font-size: 16px; font-weight: 500; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--border); }
+  .mobile-menu a:last-child { border-bottom: none; }
+
+  /* SEARCH BAR STRIP */
+  .zoekbalk-strip { background: var(--cream); border-bottom: 1px solid var(--border); padding: 20px 48px; }
+  .zoekbalk-inner { max-width: 1200px; margin: 0 auto; }
+  .zoekbalk-form { display: flex; gap: 10px; align-items: center; }
+  .zoekbalk-form input[type="text"] { flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; background: var(--white); color: var(--ink); outline: none; transition: border-color .2s; }
+  .zoekbalk-form input[type="text"]:focus { border-color: var(--accent); }
+  .zoekbalk-form select { padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; background: var(--white); color: var(--ink); outline: none; cursor: pointer; white-space: nowrap; }
+  .zoekbalk-form button { padding: 12px 24px; border-radius: 8px; background: var(--accent); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; border: none; cursor: pointer; white-space: nowrap; }
+  .zoekbalk-form button:hover { background: #a8341d; }
+
+  /* MAIN LAYOUT */
+  .pagina { max-width: 1200px; margin: 0 auto; padding: 32px 48px; display: grid; grid-template-columns: 260px 1fr; gap: 32px; align-items: start; }
+
+  /* SIDEBAR FILTERS */
+  .filters { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 24px; position: sticky; top: 88px; }
+  .filters h2 { font-family: 'Fraunces', serif; font-size: 18px; margin-bottom: 20px; }
+  .filter-sectie { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .filter-sectie:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .filter-sectie h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin-bottom: 10px; }
+  .filter-sectie select { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--paper); color: var(--ink); outline: none; }
+  .filter-sectie select:focus { border-color: var(--accent); }
+  .filter-rij { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .filter-sectie select[multiple] { height: 106px; padding: 6px 8px; font-size: 12px; }
+  .filter-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .filter-reset { width: 100%; margin-top: 4px; padding: 9px; border-radius: 8px; background: transparent; border: 1px solid var(--border); font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--muted); cursor: pointer; }
+  .filter-reset:hover { background: var(--cream); }
+  .prijs-fout { display: none; font-size: 12px; color: var(--accent); margin-top: 6px; }
+
+  /* RESULTS */
+  .resultaten-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .resultaten-header h1 { font-family: 'Fraunces', serif; font-size: 22px; }
+  .resultaten-header .aantal { font-size: 14px; color: var(--muted); margin-top: 2px; }
+  .sorteer { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+  .sorteer select { padding: 7px 10px; border: 1px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; background: var(--white); color: var(--ink); outline: none; }
+  .woningen-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+  /* WONING CARD */
+  .woning-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; transition: transform .2s, box-shadow .2s; cursor: pointer; text-decoration: none; color: inherit; display: block; }
+  .woning-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(61,43,31,.1); }
+  .woning-foto { width: 100%; height: 180px; display: flex; align-items: center; justify-content: center; font-size: 44px; position: relative; }
+  .woning-badge { position: absolute; top: 10px; left: 10px; border-radius: 6px; padding: 3px 9px; font-size: 11px; font-weight: 700; letter-spacing: .3px; }
+  .badge-nieuw { background: var(--green); color: var(--white); }
+  .badge-bieden { background: var(--accent); color: var(--white); }
+  .badge-bezichtiging { background: var(--white); border: 1px solid var(--border); color: var(--ink); }
+  .el-badge { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: var(--white); }
+  .el-aplus  { background: #1a7a3f; }
+  .el-a      { background: #2a9d5c; }
+  .el-b      { background: #7bc244; }
+  .el-c      { background: #c8d42a; color: #333; }
+  .el-d      { background: #f0c020; color: #333; }
+  .el-e      { background: #f0902a; }
+  .el-f      { background: #e05a1a; }
+  .el-g      { background: #c8321a; }
+  .woning-body { padding: 16px; }
+  .woning-prijs { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; margin-bottom: 3px; }
+  .woning-adres { font-size: 13px; color: var(--muted); margin-bottom: 10px; line-height: 1.4; }
+  .woning-specs { display: flex; gap: 12px; font-size: 12px; color: var(--muted); padding-top: 10px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+  .woning-type { display: inline-block; font-size: 11px; font-weight: 600; background: var(--cream); color: var(--muted); border-radius: 4px; padding: 2px 7px; margin-bottom: 6px; }
+
+  /* FOOTER */
+  footer { border-top: 1px solid var(--border); padding: 32px 48px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); margin-top: 48px; }
+
+  @media (max-width: 1000px) {
+    .woningen-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 0 24px; }
+    nav .nav-links, nav .nav-cta { display: none; }
+    .hamburger { display: flex; }
+    .zoekbalk-strip { padding: 16px 24px; }
+    .zoekbalk-form { flex-wrap: wrap; }
+    .zoekbalk-form input[type="text"] { min-width: 0; }
+    .pagina { grid-template-columns: 1fr; padding: 24px; gap: 24px; }
+    .filters { position: static; }
+    .woningen-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" style="text-decoration:none;display:flex;align-items:center;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 148 62" height="36"><polyline points="5,22 49,4 93,22 143,22" fill="none" stroke="#2d1f17" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="58" x2="143" y2="58" stroke="#2d1f17" stroke-width="2.5" stroke-linecap="round"/><text x="5" y="54" font-family="Fraunces, Georgia, serif" font-size="36" font-weight="700" letter-spacing="-1" fill="#2d1f17">Hous<tspan fill="#C8442A">co</tspan></text></svg></a>
+  <ul class="nav-links">
+    <li><a href="kopen.html" class="active">Kopen</a></li>
+    <li><a href="verkopen.html">Verkopen</a></li>
+    <li><a href="hoe-het-werkt.html">Hoe het werkt</a></li>
+    <li><a href="over-ons.html">Over ons</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="inloggen.html" id="nav-inloggen" class="btn btn-ghost">Inloggen</a>
+    <a href="registreren.html" id="nav-aanmelden" class="btn btn-primary">Gratis aanmelden</a>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="kopen.html">Kopen</a>
+  <a href="verkopen.html">Verkopen</a>
+  <a href="hoe-het-werkt.html">Hoe het werkt</a>
+  <a href="over-ons.html">Over ons</a>
+  <a href="contact.html">Contact</a>
+  <a href="inloggen.html" id="mob-inloggen" style="color:var(--accent);">Inloggen</a>
+  <a href="registreren.html" id="mob-aanmelden" style="color:var(--accent);font-weight:600;">Gratis aanmelden</a>
+</div>
+
+<!-- SEARCH BAR -->
+<div class="zoekbalk-strip">
+  <div class="zoekbalk-inner">
+    <form class="zoekbalk-form" id="zoekbalk-form" action="zoekresultaten.html">
+      <input type="text" name="q" id="zoekbalk-q" placeholder="Woonplaats of postcode" autocomplete="off">
+      <select name="straal" id="zoekbalk-straal">
+        <option value="1">+ 1 km</option>
+        <option value="2">+ 2 km</option>
+        <option value="5">+ 5 km</option>
+        <option value="10">+ 10 km</option>
+        <option value="25">+ 25 km</option>
+        <option value="50">+ 50 km</option>
+        <option value="0">Heel Nederland</option>
+      </select>
+      <button type="submit">🔍 Zoeken</button>
+    </form>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="pagina">
+
+  <!-- FILTERS SIDEBAR -->
+  <aside class="filters">
+    <h2>Filters</h2>
+
+    <div class="filter-sectie">
+      <h3>Prijs</h3>
+      <div class="filter-rij">
+        <div>
+          <select id="f-min-prijs">
+            <option value="">Min. prijs</option>
+            <option value="100000">€ 100.000</option>
+            <option value="150000">€ 150.000</option>
+            <option value="200000">€ 200.000</option>
+            <option value="250000">€ 250.000</option>
+            <option value="300000">€ 300.000</option>
+            <option value="350000">€ 350.000</option>
+            <option value="400000">€ 400.000</option>
+            <option value="450000">€ 450.000</option>
+            <option value="500000">€ 500.000</option>
+            <option value="600000">€ 600.000</option>
+            <option value="700000">€ 700.000</option>
+            <option value="800000">€ 800.000</option>
+            <option value="900000">€ 900.000</option>
+            <option value="1000000">€ 1.000.000</option>
+            <option value="1000001">&gt; € 1.000.000</option>
+          </select>
+        </div>
+        <div>
+          <select id="f-max-prijs">
+            <option value="">Max. prijs</option>
+            <option value="100000">€ 100.000</option>
+            <option value="150000">€ 150.000</option>
+            <option value="200000">€ 200.000</option>
+            <option value="250000">€ 250.000</option>
+            <option value="300000">€ 300.000</option>
+            <option value="350000">€ 350.000</option>
+            <option value="400000">€ 400.000</option>
+            <option value="450000">€ 450.000</option>
+            <option value="500000">€ 500.000</option>
+            <option value="600000">€ 600.000</option>
+            <option value="700000">€ 700.000</option>
+            <option value="800000">€ 800.000</option>
+            <option value="900000">€ 900.000</option>
+            <option value="1000000">€ 1.000.000</option>
+            <option value="1000001">&gt; € 1.000.000</option>
+          </select>
+        </div>
+      </div>
+      <div id="prijs-fout" class="prijs-fout">Maximumprijs kan niet lager zijn dan de minimumprijs.</div>
+    </div>
+
+    <div class="filter-sectie">
+      <h3>Type woning</h3>
+      <select id="f-type">
+        <option value="">Alle types</option>
+        <option value="appartement">Appartement</option>
+        <option value="tussenwoning">Tussenwoning</option>
+        <option value="hoekwoning">Hoekwoning</option>
+        <option value="twee-onder-een-kap">Twee-onder-een-kapwoning</option>
+        <option value="vrijstaand">Vrijstaand</option>
+      </select>
+    </div>
+
+    <div class="filter-sectie">
+      <h3>Aantal kamers</h3>
+      <select id="f-kamers">
+        <option value="">Alle</option>
+        <option value="2">2+</option>
+        <option value="3">3+</option>
+        <option value="4">4+</option>
+        <option value="5">5+</option>
+      </select>
+    </div>
+
+    <div class="filter-sectie">
+      <h3>Woonoppervlakte</h3>
+      <div class="filter-rij">
+        <select id="f-min-woon">
+          <option value="">Min. m²</option>
+          <option value="25">25 m²</option>
+          <option value="50">50 m²</option>
+          <option value="75">75 m²</option>
+          <option value="100">100 m²</option>
+          <option value="125">125 m²</option>
+          <option value="150">150 m²</option>
+          <option value="200">200 m²</option>
+          <option value="250">250 m²</option>
+          <option value="300">&gt; 300 m²</option>
+        </select>
+        <select id="f-max-woon">
+          <option value="">Max. m²</option>
+          <option value="50">50 m²</option>
+          <option value="75">75 m²</option>
+          <option value="100">100 m²</option>
+          <option value="125">125 m²</option>
+          <option value="150">150 m²</option>
+          <option value="200">200 m²</option>
+          <option value="250">250 m²</option>
+          <option value="300">&gt; 300 m²</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filter-sectie">
+      <h3>Perceeloppervlakte</h3>
+      <div class="filter-rij">
+        <select id="f-min-perceel">
+          <option value="">Min. m²</option>
+          <option value="50">50 m²</option>
+          <option value="100">100 m²</option>
+          <option value="200">200 m²</option>
+          <option value="250">250 m²</option>
+          <option value="500">500 m²</option>
+          <option value="1000">1.000 m²</option>
+          <option value="1001">&gt; 1.000 m²</option>
+        </select>
+        <select id="f-max-perceel">
+          <option value="">Max. m²</option>
+          <option value="100">100 m²</option>
+          <option value="200">200 m²</option>
+          <option value="250">250 m²</option>
+          <option value="500">500 m²</option>
+          <option value="1000">1.000 m²</option>
+          <option value="1001">&gt; 1.000 m²</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filter-sectie">
+      <h3>Energielabel</h3>
+      <select id="f-energielabel" multiple>
+        <option value="A+++++">A+++++</option>
+        <option value="A++++">A++++</option>
+        <option value="A+++">A+++</option>
+        <option value="A++">A++</option>
+        <option value="A+">A+</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+        <option value="E">E</option>
+        <option value="F">F</option>
+        <option value="G">G</option>
+      </select>
+      <div class="filter-hint">Ctrl / ⌘ voor meerdere labels</div>
+    </div>
+
+    <div class="filter-sectie">
+      <h3>Bouwperiode</h3>
+      <select id="f-bouwperiode">
+        <option value="">Alle periodes</option>
+        <option value="voor-1906">Voor 1906</option>
+        <option value="1906-1930">1906–1930</option>
+        <option value="1931-1944">1931–1944</option>
+        <option value="1945-1959">1945–1959</option>
+        <option value="1960-1970">1960–1970</option>
+        <option value="1971-1980">1971–1980</option>
+        <option value="1981-1990">1981–1990</option>
+        <option value="1991-2000">1991–2000</option>
+        <option value="2001-2010">2001–2010</option>
+        <option value="2011-2020">2011–2020</option>
+        <option value="na-2020">Na 2020</option>
+      </select>
+    </div>
+
+    <button class="filter-reset" onclick="resetFilters()">Filters wissen</button>
+  </aside>
+
+  <!-- RESULTS -->
+  <main>
+    <div class="resultaten-header">
+      <div>
+        <h1 id="resultaten-titel">Woningen</h1>
+        <div class="aantal" id="resultaten-sub">6 woningen gevonden</div>
+      </div>
+      <div class="sorteer">
+        Sorteren:
+        <select id="sorteer">
+          <option value="relevant">Meest relevant</option>
+          <option value="prijs-asc">Prijs oplopend</option>
+          <option value="prijs-desc">Prijs aflopend</option>
+          <option value="nieuw">Nieuwste eerst</option>
+          <option value="opp-desc">Grootste eerst</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="woningen-grid">
+
+      <a href="#" class="woning-card">
+        <div class="woning-foto" style="background:linear-gradient(135deg,#e8d5c4,#c9b8a8);">
+          🏡
+          <span class="woning-badge badge-bieden">Bieden open</span>
+          <span class="el-badge el-aplus" title="Energielabel A+">A+</span>
+        </div>
+        <div class="woning-body">
+          <span class="woning-type">Appartement</span>
+          <div class="woning-prijs">€ 389.000</div>
+          <div class="woning-adres">Keizersgracht 142<br>1015 CX Amsterdam</div>
+          <div class="woning-specs">
+            <span>🛏 3 kamers</span>
+            <span>📐 94 m²</span>
+            <span>🌿 Tuin</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="woning-card">
+        <div class="woning-foto" style="background:linear-gradient(135deg,#d4e8d4,#b8c9b8);">
+          🏠
+          <span class="woning-badge badge-nieuw">Nieuw</span>
+          <span class="el-badge el-a" title="Energielabel A">A</span>
+        </div>
+        <div class="woning-body">
+          <span class="woning-type">Tussenwoning</span>
+          <div class="woning-prijs">€ 525.000</div>
+          <div class="woning-adres">Beethovenstraat 78<br>3028 BP Rotterdam</div>
+          <div class="woning-specs">
+            <span>🛏 4 kamers</span>
+            <span>📐 128 m²</span>
+            <span>🏡 Perceel 165 m²</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="woning-card">
+        <div class="woning-foto" style="background:linear-gradient(135deg,#d4d4e8,#b8b8c9);">
+          🏘
+          <span class="woning-badge badge-bezichtiging">Bezichtiging</span>
+          <span class="el-badge el-c" title="Energielabel C">C</span>
+        </div>
+        <div class="woning-body">
+          <span class="woning-type">Appartement</span>
+          <div class="woning-prijs">€ 295.000</div>
+          <div class="woning-adres">Lange Leidsedwarsstraat 9<br>3511 GM Utrecht</div>
+          <div class="woning-specs">
+            <span>🛏 2 kamers</span>
+            <span>📐 72 m²</span>
+            <span>☀️ Dakterras</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="woning-card">
+        <div class="woning-foto" style="background:linear-gradient(135deg,#e8e4d4,#d4ceb8);">
+          🏰
+          <span class="woning-badge badge-bieden">Bieden open</span>
+          <span class="el-badge el-aplus" title="Energielabel A++">A++</span>
+        </div>
+        <div class="woning-body">
+          <span class="woning-type">Vrijstaand</span>
+          <div class="woning-prijs">€ 895.000</div>
+          <div class="woning-adres">Laan van Meerdervoort 310<br>2563 AJ Den Haag</div>
+          <div class="woning-specs">
+            <span>🛏 5 kamers</span>
+            <span>📐 220 m²</span>
+            <span>🏡 Perceel 480 m²</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="woning-card">
+        <div class="woning-foto" style="background:linear-gradient(135deg,#e4d8e8,#c8b8d4);">
+          🏡
+          <span class="woning-badge badge-nieuw">Nieuw</span>
+          <span class="el-badge el-a" title="Energielabel A">A</span>
+        </div>
+        <div class="woning-body">
+          <span class="woning-type">Hoekwoning</span>
+          <div class="woning-prijs">€ 449.000</div>
+          <div class="woning-adres">Zijlweg 104<br>2015 BJ Haarlem</div>
+          <div class="woning-specs">
+            <span>🛏 4 kamers</span>
+            <span>📐 115 m²</span>
+            <span>🏡 Perceel 210 m²</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="woning-card">
+        <div class="woning-foto" style="background:linear-gradient(135deg,#d8e8e4,#b8d4cc);">
+          🏠
+          <span class="woning-badge badge-bezichtiging">Bezichtiging</span>
+          <span class="el-badge el-d" title="Energielabel D">D</span>
+        </div>
+        <div class="woning-body">
+          <span class="woning-type">Tussenwoning</span>
+          <div class="woning-prijs">€ 319.000</div>
+          <div class="woning-adres">Rapenburg 48<br>2311 EW Leiden</div>
+          <div class="woning-specs">
+            <span>🛏 3 kamers</span>
+            <span>📐 88 m²</span>
+            <span>🏡 Perceel 95 m²</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="index.html" style="text-decoration:none;display:flex;align-items:center;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 148 62" height="30"><polyline points="5,22 49,4 93,22 143,22" fill="none" stroke="#2d1f17" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="5" y1="58" x2="143" y2="58" stroke="#2d1f17" stroke-width="2.5" stroke-linecap="round"/><text x="5" y="54" font-family="Fraunces, Georgia, serif" font-size="36" font-weight="700" letter-spacing="-1" fill="#2d1f17">Hous<tspan fill="#C8442A">co</tspan></text></svg></a>
+  <div>© 2026 Housco B.V. · Alle rechten voorbehouden</div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;">
+    <a href="index.html" style="color:var(--muted);text-decoration:none;">Home</a>
+    <a href="over-ons.html" style="color:var(--muted);text-decoration:none;">Over ons</a>
+    <a href="contact.html" style="color:var(--muted);text-decoration:none;">Contact</a>
+    <a href="algemene-voorwaarden.html" style="color:var(--muted);text-decoration:none;">Voorwaarden</a>
+    <a href="privacy.html" style="color:var(--muted);text-decoration:none;">Privacy</a>
+  </div>
+</footer>
+
+<script>
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+  }
+
+  function resetFilters() {
+    ['f-min-prijs','f-max-prijs','f-type','f-kamers','f-min-woon','f-max-woon',
+     'f-min-perceel','f-max-perceel','f-bouwperiode'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    var el = document.getElementById('f-energielabel');
+    if (el) { for (var i = 0; i < el.options.length; i++) el.options[i].selected = false; }
+    document.getElementById('prijs-fout').style.display = 'none';
+  }
+
+  function valideerPrijs() {
+    var min = document.getElementById('f-min-prijs').value;
+    var max = document.getElementById('f-max-prijs').value;
+    var fout = document.getElementById('prijs-fout');
+    fout.style.display = (min && max && parseInt(max) < parseInt(min)) ? 'block' : 'none';
+  }
+  document.getElementById('f-min-prijs').addEventListener('change', valideerPrijs);
+  document.getElementById('f-max-prijs').addEventListener('change', valideerPrijs);
+
+  // Pre-fill search bar from URL params
+  (function() {
+    var params = new URLSearchParams(window.location.search);
+    var q = params.get('q');
+    var straal = params.get('straal');
+    if (q) {
+      document.getElementById('zoekbalk-q').value = q;
+      var titel = document.getElementById('resultaten-titel');
+      if (titel) titel.textContent = 'Woningen in ' + q;
+    }
+    if (straal) {
+      var sel = document.getElementById('zoekbalk-straal');
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === straal) { sel.options[i].selected = true; break; }
+      }
+    }
+  })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  (function() {
+    var sb = supabase.createClient(
+      'https://vzfysqedzlkyqviwkbuw.supabase.co',
+      'sb_publishable_0NbfNpK8qzE6Ec5IEqmrJg_0wLvnTp4'
+    );
+    sb.auth.getSession().then(function(r) {
+      if (r.data && r.data.session) {
+        var ni = document.getElementById('nav-inloggen');
+        var na = document.getElementById('nav-aanmelden');
+        var mi = document.getElementById('mob-inloggen');
+        var ma = document.getElementById('mob-aanmelden');
+        if (ni) { ni.textContent = 'Mijn profiel'; ni.href = 'profiel.html'; }
+        if (na) na.style.display = 'none';
+        if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; }
+        if (ma) ma.style.display = 'none';
+
+        function uitloggen() {
+          sb.auth.signOut().then(function() { window.location.href = 'index.html'; });
+        }
+        var navCta = document.querySelector('.nav-cta');
+        if (navCta) {
+          var uitBtn = document.createElement('button');
+          uitBtn.className = 'btn btn-ghost';
+          uitBtn.textContent = 'Uitloggen';
+          uitBtn.addEventListener('click', uitloggen);
+          navCta.appendChild(uitBtn);
+        }
+        var mobileMenuEl = document.getElementById('mobileMenu');
+        if (mobileMenuEl) {
+          var mobUit = document.createElement('a');
+          mobUit.href = '#';
+          mobUit.style.cssText = 'color:var(--accent);';
+          mobUit.textContent = 'Uitloggen';
+          mobUit.addEventListener('click', function(e) { e.preventDefault(); uitloggen(); });
+          mobileMenuEl.appendChild(mobUit);
+        }
+      }
+    });
+  })();
+</script>
+</body>
+</html>
