@@ -218,17 +218,19 @@
             ddWrap.className = 'nav-dropdown';
             ddWrap.innerHTML = '<button class="nav-dropdown-btn" id="nav-dd-btn">Mijn profiel <span class="nav-dd-caret">&#9662;</span></button><div class="nav-dropdown-menu" id="nav-dd-menu">' + ddItems + '<hr class="nav-dd-divider"><button class="nav-dd-uitloggen">Uitloggen</button></div>';
             ni.parentNode.replaceChild(ddWrap, ni);
-            document.getElementById('nav-dd-btn').addEventListener('click', function(e) {
-              e.stopPropagation();
+            document.getElementById('nav-dd-btn').addEventListener('click', function() {
               document.getElementById('nav-dd-menu').classList.toggle('open');
               this.classList.toggle('open');
             });
-            document.addEventListener('click', function() {
-              var m = document.getElementById('nav-dd-menu');
-              var b = document.getElementById('nav-dd-btn');
-              if (m) m.classList.remove('open');
-              if (b) b.classList.remove('open');
-            });
+            document.addEventListener('click', function(e) {
+              var w = document.querySelector('.nav-dropdown');
+              if (w && !w.contains(e.target)) {
+                var m = document.getElementById('nav-dd-menu');
+                var b = document.getElementById('nav-dd-btn');
+                if (m) m.classList.remove('open');
+                if (b) b.classList.remove('open');
+              }
+              });
             ddWrap.querySelector('.nav-dd-uitloggen').addEventListener('click', uitloggen);
           }
 
