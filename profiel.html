@@ -178,8 +178,7 @@
     </div>
 
     <hr>
-    <div id="mijn-links" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
-    <button id="uitloggen-btn" class="btn btn-ghost" style="width:100%;">Uitloggen</button>
+    <div id="mijn-links" style="display:flex;flex-direction:column;gap:8px;"></div>
   </div>
 </div>
 
@@ -295,26 +294,19 @@
       setupEditVeld('telefoon', 'telefoonnummer');
       setupEditVeld('woonplaats', 'woonplaats');
 
-      // Role-based navigation links
+      // Role-based CTA
       const links = document.getElementById('mijn-links');
       if (links) {
-        const mkLink = (href, label, cls) => {
-          const a = document.createElement('a');
-          a.href = href; a.textContent = label;
-          a.className = cls || 'btn btn-ghost';
-          a.style.cssText = 'width:100%;text-align:center;';
-          return a;
-        };
+        const a = document.createElement('a');
+        a.style.cssText = 'width:100%;text-align:center;';
         if (profile.role === 'verkoper') {
-          links.appendChild(mkLink('verkopen.html', 'Verkoop je woning', 'btn btn-green btn-lg'));
-          links.appendChild(mkLink('mijn-woning.html', 'Mijn woning'));
+          a.href = 'verkopen.html'; a.textContent = 'Verkoop je woning';
+          a.className = 'btn btn-green btn-lg';
         } else {
-          links.appendChild(mkLink('kopen.html', 'Zoek een woning', 'btn btn-primary btn-lg'));
-          links.appendChild(mkLink('favorieten.html', 'Mijn favorieten'));
-          links.appendChild(mkLink('mijn-biedingen.html', 'Mijn biedingen'));
+          a.href = 'kopen.html'; a.textContent = 'Zoek een woning';
+          a.className = 'btn btn-primary btn-lg';
         }
-        links.appendChild(mkLink('afspraken.html', 'Afspraken'));
-        links.appendChild(mkLink('berichten.html', 'Berichten'));
+        links.appendChild(a);
       }
 
       document.getElementById('laden').style.display = 'none';
