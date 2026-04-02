@@ -77,7 +77,7 @@
       .kaart { padding: 28px 20px; }
       .veld-rij { grid-template-columns: 1fr; }
     }
-  </style>
+</style>
 </head>
 <body>
 
@@ -187,32 +187,31 @@
 
   supabase.auth.getSession().then(({ data: { session } }) => {
     if (session) {
-      const ni = document.getElementById('nav-inloggen');
-      const na = document.getElementById('nav-aanmelden');
-      const mi = document.getElementById('mob-inloggen');
-      const ma = document.getElementById('mob-aanmelden');
+      var uitloggen = function() { supabase.auth.signOut().then(function() { window.location.href = 'index.html'; }); };
+      var ni = document.getElementById('nav-inloggen');
+      var na = document.getElementById('nav-aanmelden');
+      var mi = document.getElementById('mob-inloggen');
+      var ma = document.getElementById('mob-aanmelden');
       if (ni) { ni.textContent = 'Mijn profiel'; ni.href = 'profiel.html'; }
       if (na) na.style.display = 'none';
-      if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; }
+      if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; mi.removeAttribute('onclick'); }
       if (ma) ma.style.display = 'none';
-
-      const uitloggen = () => supabase.auth.signOut().then(() => { window.location.href = 'index.html'; });
-      const navCta = document.querySelector('.nav-cta');
+      var navCta = document.querySelector('.nav-cta');
       if (navCta) {
-        const uitBtn = document.createElement('button');
+        var uitBtn = document.createElement('button');
         uitBtn.className = 'btn btn-ghost';
         uitBtn.textContent = 'Uitloggen';
         uitBtn.addEventListener('click', uitloggen);
         navCta.appendChild(uitBtn);
       }
-      const mobileMenuEl = document.getElementById('mobileMenu');
-      if (mobileMenuEl) {
-        const mobUit = document.createElement('a');
+      var mobileMenu = document.getElementById('mobileMenu');
+      if (mobileMenu) {
+        var mobUit = document.createElement('a');
         mobUit.href = '#';
         mobUit.style.cssText = 'color:var(--accent);';
         mobUit.textContent = 'Uitloggen';
-        mobUit.addEventListener('click', e => { e.preventDefault(); uitloggen(); });
-        mobileMenuEl.appendChild(mobUit);
+        mobUit.addEventListener('click', function(e) { e.preventDefault(); uitloggen(); });
+        mobileMenu.appendChild(mobUit);
       }
     }
   });

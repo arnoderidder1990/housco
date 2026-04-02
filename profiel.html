@@ -72,7 +72,8 @@
     .veld-edit input:focus { outline: none; border-color: var(--accent); }
     .btn-sm { padding: 7px 14px; font-size: 13px; border-radius: 7px; }
     @media (max-width: 480px) { .kaart { padding: 28px 20px; } }
-  </style>
+
+</style>
 </head>
 <body>
 
@@ -117,20 +118,7 @@
     <div class="veld"><strong>E-mailadres</strong><span id="email"></span></div>
     <div class="veld">
       <strong>Rol</strong>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:2px;">
-        <span id="rol" class="rol-badge"></span>
-        <button id="wijzig-rol-btn" class="btn-link">Wijzig rol</button>
-      </div>
-    </div>
-    <div id="rol-wijzig-blok" style="display:none;margin-bottom:16px;">
-      <div class="bevestig-blok">
-        <p id="bevestig-tekst"></p>
-        <div style="display:flex;gap:8px;margin-top:12px;">
-          <button id="bevestig-btn" class="btn btn-primary" style="flex:1;">Bevestigen</button>
-          <button id="annuleer-btn" class="btn btn-ghost" style="flex:1;">Annuleren</button>
-        </div>
-        <div id="wijzig-melding" style="margin-top:8px;font-size:13px;color:var(--accent);display:none;"></div>
-      </div>
+      <span id="rol" class="rol-badge"></span>
     </div>
     <div class="veld"><strong>Lid sinds</strong><span id="lid-sinds"></span></div>
 
@@ -167,7 +155,7 @@
     </div>
 
     <hr>
-    <div id="rol-actie" style="margin-bottom:12px;"></div>
+    <div id="mijn-links" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
     <button id="uitloggen-btn" class="btn btn-ghost" style="width:100%;">Uitloggen</button>
   </div>
 </div>
@@ -284,17 +272,33 @@
       setupEditVeld('telefoon', 'telefoonnummer');
       setupEditVeld('woonplaats', 'woonplaats');
 
-      if (profile.role === 'koper') {
-        document.getElementById('rol-actie').innerHTML =
-          '<a href="kopen.html" class="btn btn-primary btn-lg" style="width:100%;text-align:center;">Zoek een woning</a>';
-      } else if (profile.role === 'verkoper') {
-        document.getElementById('rol-actie').innerHTML =
-          '<a href="verkopen.html" class="btn btn-green btn-lg" style="width:100%;text-align:center;">Verkoop je woning</a>';
+      // Role-based navigation links
+      const links = document.getElementById('mijn-links');
+      if (links) {
+        const mkLink = (href, label, cls) => {
+          const a = document.createElement('a');
+          a.href = href; a.textContent = label;
+          a.className = cls || 'btn btn-ghost';
+          a.style.cssText = 'width:100%;text-align:center;';
+          return a;
+        };
+        if (profile.role === 'verkoper') {
+          links.appendChild(mkLink('verkopen.html', 'Verkoop je woning', 'btn btn-green btn-lg'));
+          links.appendChild(mkLink('mijn-woning.html', 'Mijn woning'));
+        } else {
+          links.appendChild(mkLink('kopen.html', 'Zoek een woning', 'btn btn-primary btn-lg'));
+          links.appendChild(mkLink('favorieten.html', 'Mijn favorieten'));
+          links.appendChild(mkLink('mijn-biedingen.html', 'Mijn biedingen'));
+        }
+        links.appendChild(mkLink('afspraken.html', 'Afspraken'));
+        links.appendChild(mkLink('berichten.html', 'Berichten'));
       }
 
       document.getElementById('laden').style.display = 'none';
       document.getElementById('inhoud').style.display = '';
 
+      // Simple nav: rename Inloggen → Mijn profiel, add Uitloggen
+      const uitloggenNav = () => supabase.auth.signOut().then(() => { window.location.href = 'index.html'; });
       const ni = document.getElementById('nav-inloggen');
       const na = document.getElementById('nav-aanmelden');
       const mi = document.getElementById('mob-inloggen');
@@ -303,65 +307,22 @@
       if (na) na.style.display = 'none';
       if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; }
       if (ma) ma.style.display = 'none';
-
-      const uitloggenNav = () => supabase.auth.signOut().then(() => { window.location.href = 'index.html'; });
-      const navCtaEl = document.querySelector('.nav-cta');
-      if (navCtaEl) {
-        const uitNavBtn = document.createElement('button');
-        uitNavBtn.className = 'btn btn-ghost';
-        uitNavBtn.textContent = 'Uitloggen';
-        uitNavBtn.addEventListener('click', uitloggenNav);
-        navCtaEl.appendChild(uitNavBtn);
+      const navCta = document.querySelector('.nav-cta');
+      if (navCta) {
+        const uitBtn = document.createElement('button');
+        uitBtn.className = 'btn btn-ghost';
+        uitBtn.textContent = 'Uitloggen';
+        uitBtn.addEventListener('click', uitloggenNav);
+        navCta.appendChild(uitBtn);
       }
-      const mobileMenuEl = document.getElementById('mobileMenu');
-      if (mobileMenuEl) {
+      const mobileMenu = document.getElementById('mobileMenu');
+      if (mobileMenu) {
         const mobUit = document.createElement('a');
-        mobUit.href = '#';
-        mobUit.style.cssText = 'color:var(--accent);';
+        mobUit.href = '#'; mobUit.style.cssText = 'color:var(--accent);';
         mobUit.textContent = 'Uitloggen';
         mobUit.addEventListener('click', e => { e.preventDefault(); uitloggenNav(); });
-        mobileMenuEl.appendChild(mobUit);
+        mobileMenu.appendChild(mobUit);
       }
-
-      const nieuweRol = profile.role === 'koper' ? 'verkoper' : 'koper';
-      const nieuweRolLabel = nieuweRol.charAt(0).toUpperCase() + nieuweRol.slice(1);
-      document.getElementById('bevestig-tekst').textContent = `Wil je wisselen naar ${nieuweRolLabel}?`;
-
-      document.getElementById('wijzig-rol-btn').addEventListener('click', () => {
-        document.getElementById('rol-wijzig-blok').style.display = '';
-        document.getElementById('wijzig-rol-btn').style.display = 'none';
-      });
-
-      document.getElementById('annuleer-btn').addEventListener('click', () => {
-        document.getElementById('rol-wijzig-blok').style.display = 'none';
-        document.getElementById('wijzig-rol-btn').style.display = '';
-        document.getElementById('wijzig-melding').style.display = 'none';
-      });
-
-      document.getElementById('bevestig-btn').addEventListener('click', async () => {
-        const btn = document.getElementById('bevestig-btn');
-        const melding = document.getElementById('wijzig-melding');
-        btn.disabled = true;
-        btn.textContent = 'Bezig…';
-        melding.style.display = 'none';
-
-        const { error } = await supabase.from('profiles')
-          .upsert({ id: user.id, role: nieuweRol }, { onConflict: 'id' });
-
-        if (error) {
-          melding.textContent = 'Fout: ' + error.message;
-          melding.style.display = '';
-          btn.disabled = false;
-          btn.textContent = 'Bevestigen';
-        } else {
-          window.location.reload();
-        }
-      });
-
-      document.getElementById('uitloggen-btn').addEventListener('click', async () => {
-        await supabase.auth.signOut();
-        window.location.href = 'index.html';
-      });
     }
   }
 </script>

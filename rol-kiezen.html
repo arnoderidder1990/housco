@@ -72,7 +72,7 @@
       .kaart { padding: 28px 20px; }
       .rollen { flex-direction: column; }
     }
-  </style>
+</style>
 </head>
 <body>
 
@@ -169,36 +169,32 @@
 
     document.getElementById('laden').style.display = 'none';
     document.getElementById('inhoud').style.display = '';
-
-    var ni = document.getElementById('nav-inloggen');
-    var na = document.getElementById('nav-aanmelden');
-    var mi = document.getElementById('mob-inloggen');
-    var ma = document.getElementById('mob-aanmelden');
-    if (ni) { ni.textContent = 'Mijn profiel'; ni.href = 'profiel.html'; }
-    if (na) na.style.display = 'none';
-    if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; }
-    if (ma) ma.style.display = 'none';
-
-    function uitloggenNav() {
-      supabase.auth.signOut().then(function() { window.location.href = 'index.html'; });
-    }
-    var navCta = document.querySelector('.nav-cta');
-    if (navCta) {
-      var uitBtn = document.createElement('button');
-      uitBtn.className = 'btn btn-ghost';
-      uitBtn.textContent = 'Uitloggen';
-      uitBtn.addEventListener('click', uitloggenNav);
-      navCta.appendChild(uitBtn);
-    }
-    var mobileMenuEl = document.getElementById('mobileMenu');
-    if (mobileMenuEl) {
-      var mobUit = document.createElement('a');
-      mobUit.href = '#';
-      mobUit.style.cssText = 'color:var(--accent);';
-      mobUit.textContent = 'Uitloggen';
-      mobUit.addEventListener('click', function(e) { e.preventDefault(); uitloggenNav(); });
-      mobileMenuEl.appendChild(mobUit);
-    }
+     var uitloggen = function() { supabase.auth.signOut().then(function() { window.location.href = 'index.html'; }); };
+     var ni = document.getElementById('nav-inloggen');
+     var na = document.getElementById('nav-aanmelden');
+     var mi = document.getElementById('mob-inloggen');
+     var ma = document.getElementById('mob-aanmelden');
+     if (ni) { ni.textContent = 'Mijn profiel'; ni.href = 'profiel.html'; }
+     if (na) na.style.display = 'none';
+     if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; mi.removeAttribute('onclick'); }
+     if (ma) ma.style.display = 'none';
+     var navCta = document.querySelector('.nav-cta');
+     if (navCta) {
+       var uitBtn = document.createElement('button');
+       uitBtn.className = 'btn btn-ghost';
+       uitBtn.textContent = 'Uitloggen';
+       uitBtn.addEventListener('click', uitloggen);
+       navCta.appendChild(uitBtn);
+     }
+     var mobileMenu = document.getElementById('mobileMenu');
+     if (mobileMenu) {
+       var mobUit = document.createElement('a');
+       mobUit.href = '#';
+       mobUit.style.cssText = 'color:var(--accent);';
+       mobUit.textContent = 'Uitloggen';
+       mobUit.addEventListener('click', function(e) { e.preventDefault(); uitloggen(); });
+       mobileMenu.appendChild(mobUit);
+     }
 
     var gekozenRol = null;
 
