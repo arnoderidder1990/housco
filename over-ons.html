@@ -277,6 +277,7 @@
       <button class="nav-dropdown-btn" id="nav-dropdown-btn">Mijn profiel <span>&#9660;</span></button>
       <div class="nav-dropdown-menu" id="nav-dropdown-menu">
         <a href="profiel.html">Mijn profielgegevens</a>
+        <div id="nav-dd-rol-links"></div>
         <a href="profiel.html#afspraken">Afspraken</a>
         <a href="profiel.html#berichten">Berichten</a>
         <hr>
@@ -453,6 +454,17 @@
           }
         });
         if (ddUit) ddUit.addEventListener('click', uitloggen);
+        sb.from('profiles').select('role').eq('id', uid).single().then(function(res) {
+          var role = res.data && res.data.role;
+          var rolLinks = document.getElementById('nav-dd-rol-links');
+          if (rolLinks && role) {
+            if (role === 'verkoper') {
+              rolLinks.innerHTML = '<a href="mijn-woning.html">Mijn woning</a>';
+            } else {
+              rolLinks.innerHTML = '<a href="favorieten.html">Mijn favorieten</a><a href="mijn-biedingen.html">Mijn biedingen</a>';
+            }
+          }
+        });
         var mi = document.getElementById('mob-inloggen');
         var ma = document.getElementById('mob-aanmelden');
         if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; mi.removeAttribute('onclick'); }
