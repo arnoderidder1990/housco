@@ -337,12 +337,25 @@
       if (ddUit) ddUit.addEventListener('click', uitloggenNav);
       const mi = document.getElementById('mob-inloggen');
       const ma = document.getElementById('mob-aanmelden');
-      if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; }
+      if (mi) mi.style.display = 'none';
       if (ma) ma.style.display = 'none';
       const mobileMenu = document.getElementById('mobileMenu');
       if (mobileMenu) {
+        const addMobLink = (href, label) => {
+          const a = document.createElement('a'); a.href = href; a.textContent = label;
+          mobileMenu.appendChild(a);
+        };
+        addMobLink('profiel.html', 'Mijn profielgegevens');
+        if (profile.role === 'verkoper') {
+          addMobLink('mijn-woning.html', 'Mijn woning');
+        } else {
+          addMobLink('favorieten.html', 'Mijn favorieten');
+          addMobLink('mijn-biedingen.html', 'Mijn biedingen');
+        }
+        addMobLink('afspraken.html', 'Afspraken');
+        addMobLink('berichten.html', 'Berichten');
         const mobUit = document.createElement('a');
-        mobUit.href = '#'; mobUit.style.cssText = 'color:var(--accent);';
+        mobUit.href = '#'; mobUit.style.color = 'var(--accent)';
         mobUit.textContent = 'Uitloggen';
         mobUit.addEventListener('click', e => { e.preventDefault(); uitloggenNav(); });
         mobileMenu.appendChild(mobUit);

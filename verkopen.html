@@ -466,6 +466,10 @@
           }
         });
         if (ddUit) ddUit.addEventListener('click', uitloggen);
+        var mi = document.getElementById('mob-inloggen');
+        var ma = document.getElementById('mob-aanmelden');
+        if (mi) mi.style.display = 'none';
+        if (ma) ma.style.display = 'none';
         sb.from('profiles').select('role').eq('id', uid).single().then(function(res) {
           var role = res.data && res.data.role;
           var rolLinks = document.getElementById('nav-dd-rol-links');
@@ -476,20 +480,28 @@
               rolLinks.innerHTML = '<a href="favorieten.html">Mijn favorieten</a><a href="mijn-biedingen.html">Mijn biedingen</a>';
             }
           }
+          var mobileMenu = document.getElementById('mobileMenu');
+          if (mobileMenu) {
+            var addMobLink = function(href, label) {
+              var a = document.createElement('a'); a.href = href; a.textContent = label;
+              mobileMenu.appendChild(a);
+            };
+            addMobLink('profiel.html', 'Mijn profielgegevens');
+            if (role === 'verkoper') {
+              addMobLink('mijn-woning.html', 'Mijn woning');
+            } else {
+              addMobLink('favorieten.html', 'Mijn favorieten');
+              addMobLink('mijn-biedingen.html', 'Mijn biedingen');
+            }
+            addMobLink('afspraken.html', 'Afspraken');
+            addMobLink('berichten.html', 'Berichten');
+            var mobUit = document.createElement('a');
+            mobUit.href = '#'; mobUit.style.color = 'var(--accent)';
+            mobUit.textContent = 'Uitloggen';
+            mobUit.addEventListener('click', function(e) { e.preventDefault(); uitloggen(); });
+            mobileMenu.appendChild(mobUit);
+          }
         });
-        var mi = document.getElementById('mob-inloggen');
-        var ma = document.getElementById('mob-aanmelden');
-        if (mi) { mi.textContent = 'Mijn profiel'; mi.href = 'profiel.html'; mi.removeAttribute('onclick'); }
-        if (ma) ma.style.display = 'none';
-        var mobileMenu = document.getElementById('mobileMenu');
-        if (mobileMenu) {
-          var mobUit = document.createElement('a');
-          mobUit.href = '#';
-          mobUit.style.cssText = 'color:var(--accent);';
-          mobUit.textContent = 'Uitloggen';
-          mobUit.addEventListener('click', function(e) { e.preventDefault(); uitloggen(); });
-          mobileMenu.appendChild(mobUit);
-        }
       }
     });
   })();
